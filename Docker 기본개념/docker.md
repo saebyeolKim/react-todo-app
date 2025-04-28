@@ -33,15 +33,13 @@ port : 한 컴퓨터 내에서 실행되고 있는 특정 프로그램의 주소
 1 - 4. Docker 전체 흐름 느껴보기
 
 docker 에 nginx 설치
+![image](https://github.com/user-attachments/assets/4d524299-e851-480d-8116-43e86d659536)
 
-![image.png](attachment:16e4f661-5f86-43d6-a6ea-7a01d278c074:image.png)
 
 웹서버 실행 확인
-
-![image.png](attachment:f2a9f807-dc64-491a-aa5c-bb8a0f103419:image.png)
-
-![image.png](attachment:ebfd7980-9367-45ab-ae19-95c7f4093694:image.png)
+![image (1)](https://github.com/user-attachments/assets/aa7db88a-2950-463b-8e0f-69321b6c6005)
+![image (2)](https://github.com/user-attachments/assets/49fa4f25-574f-4ccd-997e-8ce60054dbb8)
 
 실행 중인지 확인
+![image (3)](https://github.com/user-attachments/assets/697d2bd6-c0e8-4196-a9d2-5b8be0f2c5d2)
 
-![image.png](attachment:bb6e1cad-cce3-4142-b99d-cf805470041e:image.png)
