@@ -93,12 +93,20 @@ docker run -d -p 4001(호스트 포트):80(컨테이너 포트) nginx
 ![image](https://github.com/user-attachments/assets/19706335-8d1a-4ccf-bb9b-b8cd909e682d)
 
 ---
-2-3 컨터이너 조회/중지/삭제
+2-3 컨테이너 조회/중지/삭제
 ```
 docker ps : 실행중인 컨테이너만 조회
 docker ps -a : 모든 컨테이너 조회
 docker kill id의 일부분 : docker stop 은 안전한 종료 방법, docker kill 은 강제 중지
 docker rm $(docker ps -qa) : 중지되어 있는 모든 컨테이너 삭제
 docker rm -f id의 일부분 : 실행되고 있는 컨테이너 삭제
+```
+---
+2-4 컨테이너 로그 조회
+```
+docker logs id의 일부분 : 해당 컨테이너의 로그 조회
+docker logs --tail 10 id의 일부분 : 해당 컨테이너 로그의 10줄 조회
+docker logs -f id의 일부분 : 실시간으로 발생되는 로그 조회
+docker logs --tail 0 -f id의 일부분 : 이전 로그는 조회안하고, 명령어 다음부터 들어오는 로그 조회
 ```
 
