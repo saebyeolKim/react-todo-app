@@ -58,7 +58,7 @@ Error response from daemon: conflict: unable to delete 2e2da08a061a (must be for
 * docker image rm $(docker images -q) : 컨테이너에서 사용하고 있지 않은 전체 이미지 삭제
 * docker image rm -f $(docker images -q) : 중단된 컨테이너에서 사용하고 있지 않은 전체 이미지 삭제
 * docker image rm ID 의 일부 ID 의 일부 : 여러개의 id 삭제
-
+---
 2-2 컨테이너 생성/실행
 ```
 docker create nginx : 컨테이너 (미니컴퓨터) 생성
@@ -91,4 +91,14 @@ nginx 를 up 했는데도 불구하고 localhost 라고 입력하면 사이트�
 docker run -d -p 4001(호스트 포트):80(컨테이너 포트) nginx
 ```
 ![image](https://github.com/user-attachments/assets/19706335-8d1a-4ccf-bb9b-b8cd909e682d)
+
+---
+2-3 컨터이너 조회/중지/삭제
+```
+docker ps : 실행중인 컨테이너만 조회
+docker ps -a : 모든 컨테이너 조회
+docker kill id의 일부분 : docker stop 은 안전한 종료 방법, docker kill 은 강제 중지
+docker rm $(docker ps -qa) : 중지되어 있는 모든 컨테이너 삭제
+docker rm -f id의 일부분 : 실행되고 있는 컨테이너 삭제
+```
 
