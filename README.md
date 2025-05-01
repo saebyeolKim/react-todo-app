@@ -117,5 +117,15 @@ exit : 컨테이너에서 나오기
 ```
 ![image](https://github.com/user-attachments/assets/73713df5-f031-4651-a0f2-049f42830e75)
 
+---
+2-6 Docker 전체 흐름 다시 느껴보기 (Nginx 설치 및 실행)
+
+---
+2-7 Docker 로 Redis 실행시켜보기
+```
+docker run -d -p 6379:6379 redis : redis 기본 포트로 실행시키기
+redis-cli : redis 접속
+```
+![image](https://github.com/user-attachments/assets/d91f6012-317b-4132-91a1-6e724a6da442)
 
 
