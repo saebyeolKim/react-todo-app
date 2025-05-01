@@ -109,4 +109,13 @@ docker logs --tail 10 id의 일부분 : 해당 컨테이너 로그의 10줄 조�
 docker logs -f id의 일부분 : 실시간으로 발생되는 로그 조회
 docker logs --tail 0 -f id의 일부분 : 이전 로그는 조회안하고, 명령어 다음부터 들어오는 로그 조회
 ```
+---
+2-5 실행중인 컨테이너 내부에 접속하기 (exec -it)
+```
+docker exec -it id의 일부분 bash : 실행중인 컨테이너 내부로 접속
+exit : 컨테이너에서 나오기
+```
+![image](https://github.com/user-attachments/assets/73713df5-f031-4651-a0f2-049f42830e75)
+
+
 
