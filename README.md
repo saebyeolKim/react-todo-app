@@ -169,3 +169,57 @@ docker run -e MYSQL_ROOT_PASSWORD=1234 -d -p 3306:3306 mysql : mysql 실행하�
 ![image](https://github.com/user-attachments/assets/4326467f-013d-42d7-83d5-4d5e60804eea)
 
 환경변수 세팅된 것 확인하기
+
+```
+컨테이너 컴퓨터의 데이터를 저장하고 싶은 디렉토리로 이동 및 새 디렉토리 생성
+cd Users/User/Downloads
+mkdir docker-mysql : 디렉토리 생성
+cd docker-mysql : 해당 디렉토리로 이동
+호스트의 경로를 빌려서 컨테이너에 저장된 데이터는 남아있다.
+docker run -e MYSQL_ROOT_PASSWORD=1234 -d -p 3306:3306 -v /Users/User/Downloads/docker-mysql/mysql-data:/var/lib/mysql mysql
+```
+2025-05-04 위의 방법으로 볼륨생성하니 권한 오류 발생
+![image](https://github.com/user-attachments/assets/11be6e4f-f5d3-4884-b580-559b70da7e1b)
+
+❗ Permission denied가 계속 발생하는 이유
+Windows 경로(C:/Users/...)를 마운트했을 때 MySQL 컨테이너가 내부적으로 chown -R mysql:mysql /var/lib/mysql을 수행하는데, Windows NTFS는 리눅스의 chown을 허용하지 않기 때문입니다.
+심지어 사용자 디렉터리(C:/Users/...)도 예외는 아닙니다.
+
+결론:
+
+✅ 이 문제는 해결할 수 있는 게 아니라 구조적인 제한입니다.
+```
+docker volume create mysql-data
+
+docker run -e MYSQL_ROOT_PASSWORD=password123 \
+  -p 3306:3306 \
+  -v mysql-data:/var/lib/mysql \
+  -d --name my-mysql \
+  mysql:8.0
+```
+
+❓ 그런데 Docker Volume이면 "호스트 어디에 저장되는지" 모른다?
+맞습니다. Docker Volume은 로컬 파일 시스템에서 숨겨진 위치에 데이터를 저장합니다.
+하지만 확인 가능합니다.
+
+🔍 Docker Volume 실제 위치 확인법 (WSL2 기준)
+volume 위치 확인: docker volume inspect mysql-data
+
+위의 방법으로 도커볼륨 생성 후 확인
+database 생성
+
+![image](https://github.com/user-attachments/assets/cca7a5f7-0a39-4b4f-9a08-c82af967e8b0)
+
+docker 제거
+
+![image](https://github.com/user-attachments/assets/d7e29af0-bbcf-49a6-88a9-d5551593ff3f)
+
+docker 재생성
+
+![image](https://github.com/user-attachments/assets/32f5745d-0e91-4dd3-8f7e-9a3173eb2b9c)
+
+database 그대로 있는지 확인
+
+![image](https://github.com/user-attachments/assets/9fc6b6df-fc22-49c0-ad46-b69db83e9b03)
+
+⚠️ 볼륨 최초 생성 후 비밀번호를 변경해서 실행하면, 덮어쓰기가 안되기 때문에 변경된 비밀번호로 mysql 접근 시 접근 안됨
