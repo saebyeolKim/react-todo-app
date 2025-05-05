@@ -275,7 +275,40 @@ FROM [이미지명]:[태그명]
 
 - `태그명`을 적지 않으면 해당 이미지의 최신(latest) 버전을 사용한다.
 
+---
+4-3 [실습] FROM : 베이스 이미지 생성
+![image](https://github.com/user-attachments/assets/2f2078ce-5903-4188-9a25-cdde21243ab3)
 
+-t : 도커 이미지 이름 설정 (my-jdk17-server)
+. : 상대경로에서 도커 빌드 실행
 
+![image](https://github.com/user-attachments/assets/c8899361-8538-41ee-b228-c7f352cdeb8b)
 
+이미지 빌드 후 확인
+
+```
+docker build -t my-jdk17-server:beta . : 버전 설정
+```
+![image](https://github.com/user-attachments/assets/56461ce2-e88c-4a02-8327-b5549bc1492f)
+
+docker run -d my-jdk17-server 실행 시 docker ps 에 up 된 컨테이너가 없다
+
+-> Dockerfile 에 올려놓은 작업이 완료되면 종료되기 때문! == Dockerfile 에 내용이 없기 때문!
+
+- docker exec -it id의 일부분 bash : up 된 컨테이너 내부만 들어갈 수 있기 때문에 사용불가
+
+Dockerfile
+```
+FROM openjdk:17-jdk
+
+...
+
+ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 500초 동안 시스템을 일시정지 시키는 명령어
+```
+
+위처럼 작성해주고 다시 빌드 -> 런 해주면 docker exec -it id의 일부분 bash 명령어 사용가능
+
+![image](https://github.com/user-attachments/assets/a2f0a0cf-32e4-4577-b836-e1f0f8a8ed38)
+
+실제로 내가 만든 이미지에 자바 17 이 있는지 확인 가능
 
