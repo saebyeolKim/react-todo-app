@@ -129,7 +129,7 @@ redis-cli : redis 접속
 ![image](https://github.com/user-attachments/assets/d91f6012-317b-4132-91a1-6e724a6da442)
 
 ---
-### 💧: Docker Volume 을 활용해 데이터 유실 방지 하기
+### 💧 Docker Volume 을 활용해 데이터 유실 방지 하기
 3-1 Docekr Volume 
 
 ✅ 컨테이너가 가진 문제점
@@ -226,3 +226,11 @@ database 그대로 있는지 확인
 ⚠️ 볼륨 최초 생성 후 비밀번호를 변경해서 실행하면, 덮어쓰기가 안되기 때문에 변경된 비밀번호로 mysql 접근 시 접근 안됨
 ⚠️ 기존에 폴더를 만들어 놓고 볼륨을 생성한다면 docker run 이 되질 않는다. (호스트의 저장공간으로 덮어씌워지기 때문에)
 
+---
+3-3 Docker로 PostgreSQL 실행시켜보기
+```
+mkdir C:\docker-postgresql
+cd C:\docker-postgresql
+docker run -e POSTGRES_PASSWORD=psssword123 -p 5432:5432 -v "C:\docker-postgresql\postgresql-data:/var/lib/postgresql/data" -d postgres
+```
+![image](https://github.com/user-attachments/assets/5b1b845b-e011-47da-8d09-a2d1cdb2b6e7)
