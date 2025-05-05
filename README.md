@@ -243,3 +243,16 @@ cd .\docker-mongodb\
 docker run -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=password123 -p 27017:27017 -v "C:\docker-mongodb\mongodb-data:/data/db" -d mongo
 ```
 ![image](https://github.com/user-attachments/assets/1a159daa-ca1d-410e-8cd8-29780710b508)
+
+### 🔍 Dockerfile 활용해 이미지 직접 만들기
+4-1 Dockerfile 이란?
+> Dockerfile 이라는 걸 활용해서 Docker 이미지를 만들 수 있다.
+
+예를 들어, 내가 만든 Spring boot 프로젝트가 있다. 내가 만든 Spring boot 프로젝트 자체를 Docker 이미지로 만들고 싶을 수 있다.
+이럴 때에도 Dockerfile을 활용하면 나만의 Docker 이미지를 만들 수 있게 된다.
+
+
+
+
+
+
