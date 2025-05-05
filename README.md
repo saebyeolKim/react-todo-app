@@ -234,3 +234,12 @@ cd C:\docker-postgresql
 docker run -e POSTGRES_PASSWORD=psssword123 -p 5432:5432 -v "C:\docker-postgresql\postgresql-data:/var/lib/postgresql/data" -d postgres
 ```
 ![image](https://github.com/user-attachments/assets/5b1b845b-e011-47da-8d09-a2d1cdb2b6e7)
+
+---
+3-4 Docker로 MongoDB 실행시켜보기
+```
+mkdir docker-mongodb
+cd .\docker-mongodb\
+docker run -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=password123 -p 27017:27017 -v "C:\docker-mongodb\mongodb-data:/data/db" -d mongo
+```
+![image](https://github.com/user-attachments/assets/1a159daa-ca1d-410e-8cd8-29780710b508)
