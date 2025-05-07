@@ -312,3 +312,132 @@ ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 500초 동안 시스템을 일시�
 
 실제로 내가 만든 이미지에 자바 17 이 있는지 확인 가능
 
+4-4 COPY : 파일 복사(이동)
+
+✅ 의미
+
+`COPY`는 **호스트 컴퓨터**에 있는 파일을 복사해서 **컨테이너**로 전달한다.
+
+✅ 사용법
+
+```docker
+# 문법
+COPY [호스트 컴퓨터에 있는 복사할 파일의 경로] [컨테이너에서 파일이 위치할 경로]
+
+# 예시
+COPY app.txt /app.txt
+```
+
+🎯 파일 복사해보기
+
+1. **app.txt 파일 만들기**
+
+1. **Dockerfile 만들어서 이미지 생성 및 컨테이너 실행**
+    
+    **Dockerfile**
+    
+    ```bash
+    FROM ubuntu
+    
+    COPY app.txt(호스트 컴퓨터) /app.txt(컨테이너 컴퓨터)
+    
+    ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 디버깅용 코드
+    ```
+    
+    ```bash
+    $ docker build -t my-server .
+    $ docker run -d my-server
+    $ docker exec -it [Container ID] bash
+    
+    $ ls
+    ```
+    ![image](https://github.com/user-attachments/assets/ba143497-0167-44b3-b282-9ee1df2376d0)
+
+
+🎯 폴더 안에 있는 모든 파일들 복사
+
+1. **`my-app` 디렉터리 만들기, `my-app` 디렉터리 안에 파일 만들기**
+    
+    
+2. **Dockerfile 만들어서 이미지 생성 및 컨테이너 실행**
+    
+    **Dockerfile**
+    
+    ```bash
+    FROM ubuntu
+    
+    COPY my-app /my-app/
+    
+    ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 디버깅용 코드
+    ```
+    
+    ```bash
+    $ docker build -t my-server .
+    $ docker run -d my-server
+    $ docker exec -it [Container ID] bash
+    
+    $ ls
+    ```
+    ![image](https://github.com/user-attachments/assets/de84dad9-09ab-4646-a3ff-e6f84de66013)
+
+
+🎯 와일드 카드 사용해보기
+
+1. `app.txt`, `readme.txt` 파일 2개 만들기
+
+1. **Dockerfile 만들어서 이미지 생성 및 컨테이너 실행**
+    
+    **Dockerfile**
+    
+    ```bash
+    FROM ubuntu
+    
+    COPY *.txt /text-files/
+    
+    ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 디버깅용 코드
+    ```
+    
+    - **주의)** `/text-files`라고 적으면 안 되고 `/text-files/`라고 적어야 `text-files`라는 디렉토리 안에 파일들이 정상적으로 복사된다.
+
+```bash
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker exec -it [Container ID] bash
+
+$ ls
+```
+
+### 🎯 `.dockerignore` 사용해보기
+
+> 특정 파일 또는 폴더만 `COPY`를 하고 싶지 않을 수 있다. 그럴 때 `.dockerignore`를 활용한다.
+> 
+1. **`.dockerignore` 파일 만들기**
+    
+    **.dockerignore**
+    
+    ```bash
+    readme.txt
+    ```
+    
+2. **Dockerfile 만들어서 이미지 생성 및 컨테이너 실행**
+    
+    **Dockerfile**
+    
+    ```bash
+    FROM ubuntu
+    
+    COPY ./ /
+    
+    ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 디버깅용 코드
+    ```
+    
+
+```bash
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker exec -it [Container ID] bash
+
+$ ls
+```
+
+
