@@ -441,6 +441,7 @@ $ docker exec -it [Container ID] bash
 $ ls
 ```
 ---
+
 4-5 ENTRYPOINT : 컨테이너가 시작할 때 실행되는 명령어
 
 ✅ 의미
@@ -448,27 +449,104 @@ $ ls
 ENTRYPOINT는 컨테이너가 생성되고 최초로 실행할 때 수행되는 명령어를 뜻한다. 쉽게 설명하자면 ENTRYPOINT에는 미니 컴퓨터의 전원을 키고나서 실행시키고 싶은 명령어를 적으면 된다. 
 
 ✅ 사용법
-```
 문법
 ENTRYPOINT [명령문...]
 
 예시
 ENTRYPOINT ["node", "dist/main.js"]
-​```
 
 🎯 예제
 Dockerfile
-```
+
 FROM ubuntu
 
 ENTRYPOINT ["/bin/bash", "-c", "echo hello"]
-```
 
-```
 $ docker build -t my-server .
 $ docker run -d my-server
 $ docker ps -a
 $ docker logs [Container ID]
-```
 
-![image](https://github.com/user-attachments/assets/870d391b-a527-412f-add3-f6c3c52aa847)
+---
+
+4-6 [실습] 백엔드 프로젝트(Spring Boot) 프로젝트를 Docker로 실행시키기
+
+✅ 백엔드 프로젝트(Spring Boot) 프로젝트를 Docker로 실행시키기
+
+1. **프로젝트 셋팅**
+    
+    [start.spring.io](https://start.spring.io/)
+    - Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
+    
+2. **간단한 코드 작성**
+    
+    **AppController**
+    
+    ```java
+    @RestController
+    public class AppController {
+      @GetMapping("/")
+      public String home() {
+        return "Hello, World!";
+      }
+    }
+    ```
+    
+3. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```docker
+    FROM openjdk:17-jdk
+    
+    COPY build/libs/*SNAPSHOT.jar app.jar
+    
+    ENTRYPOINT ["java", "-jar", "/app.jar"]
+    ```
+    
+
+1. **Spring Boot 프로젝트 빌드하기**
+    
+    ```bash
+    $ ./gradlew clean build
+    ```
+    
+2. **Dockerfile을 바탕으로 이미지 빌드하기**
+    
+    ```bash
+    $ docker build -t hello-server .
+    ```
+    
+3. **이미지가 잘 생성됐는 지 확인하기**
+    
+    ```bash
+    $ docker image ls
+    ```
+    
+4. **생성한 이미지를 컨테이너로 실행시켜보기**
+    
+    ```bash
+    $ docker run -d -p 8080:8080 hello-server
+    ```
+    
+5. **컨테이너 잘 실행되고 있는 지 확인하기**
+    
+    ```bash
+    $ docker ps
+    ```
+    
+6. [**localhost:8080](http://localhost:8080)으로 들어가보기**
+    ![image](https://github.com/user-attachments/assets/80702ba5-12bf-4223-8f53-f30008733d2f)
+
+    
+7. **실행시킨 컨테이너 중지 / 삭제하기, 이미지 삭제하기**
+    
+    ```bash
+    $ docker stop {컨테이너 ID}
+    $ docker rm {컨테이너 ID}
+    $ docker image rm {이미지 ID}
+    ```
+    
+
+✅ 그림으로 이해하기
+![image](https://github.com/user-attachments/assets/592b1fb2-a9e2-406e-a250-79e796f9daed)
