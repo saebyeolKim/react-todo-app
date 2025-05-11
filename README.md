@@ -312,6 +312,7 @@ ENTRYPOINT ["/bin/bash", "-c", "sleep 500"] # 500초 동안 시스템을 일시�
 
 실제로 내가 만든 이미지에 자바 17 이 있는지 확인 가능
 
+---
 4-4 COPY : 파일 복사(이동)
 
 ✅ 의미
@@ -407,7 +408,7 @@ $ docker exec -it [Container ID] bash
 $ ls
 ```
 
-### 🎯 `.dockerignore` 사용해보기
+🎯 `.dockerignore` 사용해보기
 
 > 특정 파일 또는 폴더만 `COPY`를 하고 싶지 않을 수 있다. 그럴 때 `.dockerignore`를 활용한다.
 > 
@@ -439,5 +440,35 @@ $ docker exec -it [Container ID] bash
 
 $ ls
 ```
+---
+4-5 ENTRYPOINT : 컨테이너가 시작할 때 실행되는 명령어
 
+✅ 의미
 
+ENTRYPOINT는 컨테이너가 생성되고 최초로 실행할 때 수행되는 명령어를 뜻한다. 쉽게 설명하자면 ENTRYPOINT에는 미니 컴퓨터의 전원을 키고나서 실행시키고 싶은 명령어를 적으면 된다. 
+
+✅ 사용법
+```
+문법
+ENTRYPOINT [명령문...]
+
+예시
+ENTRYPOINT ["node", "dist/main.js"]
+​```
+
+🎯 예제
+Dockerfile
+```
+FROM ubuntu
+
+ENTRYPOINT ["/bin/bash", "-c", "echo hello"]
+```
+
+```
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker ps -a
+$ docker logs [Container ID]
+```
+
+![image](https://github.com/user-attachments/assets/870d391b-a527-412f-add3-f6c3c52aa847)
