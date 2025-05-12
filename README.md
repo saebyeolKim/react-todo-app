@@ -565,11 +565,10 @@ RUN은 이미지 생성 과정에서 명령어를 실행시켜야 할 때 사용
 
 RUN [명령문]
 
-
 예시
 
 RUN npm install
-​
+
 ✅ RUN vs ENTRYPOINT
 
 RUN 명령어와 ENTRYPOINT 명령어가 헷갈릴 때가 있다. 둘 다 같이 명령어를 실행시키기 때문이다. 하지만 엄연히 둘의 사용 용도는 다르다. RUN은 ‘이미지 생성 과정’에서 필요한 명령어를 실행시킬 때 사용하고, ENTRYPOINT는 생성된 이미지를 기반으로 컨테이너를 생성한 직후에 명령어를 실행시킬 때 사용한다. 
@@ -579,20 +578,86 @@ RUN 명령어와 ENTRYPOINT 명령어가 헷갈릴 때가 있다. 둘 다 같이
 
 Dockerfile 작성하기
 
-Dockerfile
-```
+```Dockerfile
 FROM ubuntu
-
 RUN apt update && apt install -y git
-
 ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
-​```
+```
 
 이미지 빌드 및 컨테이너 실행
+
+```bash
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker exec -it [Container ID] bash
+$ git -v # 컨테이너 내에 git이 잘 설치됐는 지 확인
 ```
+
+---
+4-8 WORKDIR : 작업 디렉토리를 지정
+
+✅ 의미
+
+`WORKDIR`으로 작업 디렉터리를 전환하면 그 이후에 등장하는 모든 `RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 명령문은 해당 디렉터리를 기준으로 실행됩니다.  
+
+작업 디렉터리를 굳이 지정해주는 이유는 **컨테이너 내부의 폴더를 깔끔하게 관리하기 위해서**입니다.  
+
+컨테이너도 미니 컴퓨터와 같기 때문에 Dockerfile을 통해 생성되는 파일들을 **특정 폴더에 정리해두는 것이 추후 관리에 용이**합니다.  
+만약 `WORKDIR`을 쓰지 않으면 컨테이너 내부에 존재하는 기존 파일들과 뒤섞이게 됩니다.
+
+✅ 사용법
+
+🔹 문법
+
+```
+WORKDIR [작업 디렉토리로 사용할 절대 경로]
+```
+
+🔹 예시
+
+```Dockerfile
+WORKDIR /usr/src/app
+```
+
+🎯 예제
+
+#### ✅ app.txt, src, config.json 파일 만들기  
+#### ✅ Dockerfile 만들어서 이미지 생성 및 컨테이너 실행  
+
+🚫 WORKDIR을 안 썼을 때: 파일 구조 확인
+
+```Dockerfile
+FROM ubuntu
+
+COPY ./ ./
+
+ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]  # 디버깅용 코드
+```
+
+```bash
 $ docker build -t my-server .
 $ docker run -d my-server
 $ docker exec -it [Container ID] bash
 
-$ git -v # 컨테이너 내에 git이 잘 설치됐는 지 확인
+$ ls
+```
+
+✅ WORKDIR을 썼을 때: 파일 구조 확인
+
+```Dockerfile
+FROM ubuntu
+
+WORKDIR /my-dir
+
+COPY ./ ./
+
+ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
+```
+
+```bash
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker exec -it [Container ID] bash
+
+$ ls
 ```
