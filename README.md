@@ -550,3 +550,49 @@ $ docker logs [Container ID]
 
 ✅ 그림으로 이해하기
 ![image](https://github.com/user-attachments/assets/592b1fb2-a9e2-406e-a250-79e796f9daed)
+
+---
+
+4-7 RUN : 이미지를 생성하는 과정에서 사용할 명령문 실행
+
+✅ 의미
+
+RUN은 이미지 생성 과정에서 명령어를 실행시켜야 할 때 사용한다. 
+
+✅ 사용법
+
+문법
+
+RUN [명령문]
+
+
+예시
+
+RUN npm install
+​
+✅ RUN vs ENTRYPOINT
+
+RUN 명령어와 ENTRYPOINT 명령어가 헷갈릴 때가 있다. 둘 다 같이 명령어를 실행시키기 때문이다. 하지만 엄연히 둘의 사용 용도는 다르다. RUN은 ‘이미지 생성 과정’에서 필요한 명령어를 실행시킬 때 사용하고, ENTRYPOINT는 생성된 이미지를 기반으로 컨테이너를 생성한 직후에 명령어를 실행시킬 때 사용한다. 
+
+🎯 예제
+미니 컴퓨터 환경이 ubuntu로 구성되었으면 좋겠고 git이 깔려있으면 좋겠다고 가정하자. 이런 환경을 구성하기 위해 Dockerfile을 활용해 ubuntu, git이 깔려있는 이미지를 만들면 된다. 
+
+Dockerfile 작성하기
+
+Dockerfile
+```
+FROM ubuntu
+
+RUN apt update && apt install -y git
+
+ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
+​```
+
+이미지 빌드 및 컨테이너 실행
+```
+$ docker build -t my-server .
+$ docker run -d my-server
+$ docker exec -it [Container ID] bash
+
+$ git -v # 컨테이너 내에 git이 잘 설치됐는 지 확인
+```
