@@ -1,5 +1,5 @@
-FROM openjdk:17-jdk
+FROM ubuntu
 
-COPY build/libs/*SNAPSHOT.jar app.jar
+RUN apt update && apt install -y git
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
