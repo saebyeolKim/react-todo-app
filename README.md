@@ -1,5 +1,10 @@
-# Docker-Study
-비전공자도 이해할 수 있는 Docker 입문/실전
+# 🐳 Docker 학습 자료 모음
 
-[Section1-4] (/section1-4/Basic-Docker.md)
-[Section5-6] (/section5-6/Advanced-Docker.md)
+이 저장소는 Docker에 대한 기본부터 고급 개념까지 다루는 학습 자료를 정리한 것입니다.
+
+---
+## 📂 목차
+
+### 📦 기본 과정
+- [Section 1-4: 기본 Docker](section1-4/Basic-Docker.md)
+- [Section 5-6: 고급 Docker](section5-6/Advanced-Docker.md)
