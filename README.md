@@ -732,3 +732,54 @@ node_modules
 ![image](https://github.com/user-attachments/assets/550d6166-c1b2-43d8-bf27-5f5692edf0c5)
 
 ![image](https://github.com/user-attachments/assets/70d4d002-ea14-4604-8a74-c4746e81ce67)
+
+---
+4-9 [실습] 웹 프론트엔드 프로젝트(Next.js)를 Docker로 배포하기
+
+### next 프로젝트 생성
+
+```
+npx create-next-app@latest
+```
+![image](https://github.com/user-attachments/assets/505fb8ed-72de-4566-85fa-4312bf337c8b)
+
+### 생성 후 vs code 로 해당 폴더 열기
+
+```
+npm run dev : 프로젝트 실행
+```
+
+![image](https://github.com/user-attachments/assets/42175ffe-c881-4b98-a454-2343ba0749df)
+
+### 파일생성 
+
+Dockerfile
+```
+FROM node:20-alpine # 실제 이미지를 최적화시켜 용량을 줄여 버전 - 실제 운영환경에서는 많이 사용
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+
+EXPOSE 3000
+
+ENTRYPOINT ["npm", "run", "start"]
+```
+
+.dockerignore
+```
+node_modules
+```
+
+terminal
+```
+docker build -t my-web-server .
+docker image ls
+docker run -d -p 80:3000 my-web-server
+```
+
+![image](https://github.com/user-attachments/assets/05b1761a-4cff-4114-b48a-46f15dcd6843)
