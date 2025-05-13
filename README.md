@@ -678,3 +678,57 @@ EXPOSE [포트 번호]
 예시
 EXPOSE 3000
 ```
+
+---
+4-9 [실습] 백엔드 프로젝트(Nest.js)를 Docker로 실행시키기
+
+### 노드 다운로드
+
+https://nodejs.org/ko/download
+
+![image](https://github.com/user-attachments/assets/9ae884cc-892c-4fba-8fdc-49ba2e7953c0)
+
+다운로드 후
+
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+npm -v
+```
+
+![image](https://github.com/user-attachments/assets/ee543ede-615f-4f4b-835e-c89bb62db549)
+
+### Next.js 다운로드
+
+```
+npm i -g @nestjs/cli : nexst.js 다운로드
+nest new my-server : 서버 생성
+```
+
+vs code 로 my-server 폴더 열어 Dockerfile 생성
+
+Dockerfile
+```
+FROM node
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install # 이미지 생성될 때 실행되는 명령어
+
+RUN npm run build
+
+EXPOSE 3000
+
+ENTRYPOINT ["node", "dist/main.js"]  # 최종적으로 컨테이너 실행될 때 빌드된 nestjs 프로젝트 실행시키는 명령어
+```
+
+
+.dockerignore
+```
+node_modules
+```
+
+![image](https://github.com/user-attachments/assets/550d6166-c1b2-43d8-bf27-5f5692edf0c5)
+
+![image](https://github.com/user-attachments/assets/70d4d002-ea14-4604-8a74-c4746e81ce67)
