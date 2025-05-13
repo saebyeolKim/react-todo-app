@@ -734,7 +734,7 @@ node_modules
 ![image](https://github.com/user-attachments/assets/70d4d002-ea14-4604-8a74-c4746e81ce67)
 
 ---
-4-9 [실습] 웹 프론트엔드 프로젝트(Next.js)를 Docker로 배포하기
+4-10 [실습] 웹 프론트엔드 프로젝트(Next.js)를 Docker로 배포하기
 
 ### next 프로젝트 생성
 
@@ -783,3 +783,46 @@ docker run -d -p 80:3000 my-web-server
 ```
 
 ![image](https://github.com/user-attachments/assets/05b1761a-4cff-4114-b48a-46f15dcd6843)
+
+---
+4-11 [실습] 웹 프론트엔드 프로젝트(HTML, CSS, Nginx)를 Docker로 배포하기
+
+index.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>html 테스트 페이지</title>
+</head>
+<body>
+  <h1>안녕하세요! 👋</h1>
+  <p id="message">여기에 메시지가 표시됩니다.</p>
+  <button onclick="showMessage()">메시지 보기</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
+```
+
+style.css
+```
+* {
+    color: blue;
+}
+```
+
+Dockerfile
+```
+FROM nginx
+COPY ./ /usr/share/nginx/html
+```
+
+terminal
+```
+docker build -t my-web-server .
+docker image ls
+docker run -d -p 80:80 my-web-server
+```
+
+![image](https://github.com/user-attachments/assets/cfb4c040-b5d9-4087-a867-2a3ea1c08b07)
