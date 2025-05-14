@@ -51,14 +51,14 @@ $ docker run --name webserver -d -p 80:80 nginx
       ![image](https://github.com/user-attachments/assets/024334d0-4404-4916-8167-30d9781ddfc8)
 
 
-1. **compose 파일 실행시키기**
+2. **compose 파일 실행시키기**
     
     ```bash
     $ docker compose up -d
     ```
     
 
-1. **compose 실행 현황 보기**
+3. **compose 실행 현황 보기**
     
     ```bash
     $ docker compose ps
@@ -66,12 +66,12 @@ $ docker run --name webserver -d -p 80:80 nginx
     ```
     
 
-1. [localhost:80](http://localhost:80) 들어가보기
+4. [localhost:80](http://localhost:80) 들어가보기
     
     ![image](https://github.com/user-attachments/assets/b0d61286-d02e-49df-962e-bb1579115d7e)
 
     
-2. **compose로 실행된 컨테이너 삭제**
+5. **compose로 실행된 컨테이너 삭제**
     
     ```bash
     $ docker compose down
@@ -253,7 +253,9 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     
     - `environment: ...` : CLI에서 `-e MYSQL_ROOT_PASSWORD=password` 역할과 동일하다.
     - `volumes: ...` : CLI에서 `-v {호스트 경로}:/var/lib/mysql` 역할과 동일하다.
-    
+
+    ![image](https://github.com/user-attachments/assets/fe5595f8-522f-4b59-ba69-d08316fefa27)
+
 2. **compose 파일 실행시키기**
     
     ```bash
@@ -261,7 +263,7 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     ```
     
 
-1. **compose 실행 현황 보기**
+3. **compose 실행 현황 보기**
     
     ```bash
     $ docker compose ps
@@ -269,15 +271,15 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     ```
     
 
-1. **잘 작동하는 지 DBeaver에 연결시켜보기**
+4. **잘 작동하는 지 DBeaver에 연결시켜보기**
     
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3a525b94-405d-45ed-a37a-d2b4b0bbcc59/Untitled.png)
-    
+   ![image](https://github.com/user-attachments/assets/c33a5770-c5b5-4411-9c10-27cbbbc438b7)
 
-1. **volume의 경로에 데이터가 저장되고 있는 지 확인하기**
+
+5. **volume의 경로에 데이터가 저장되고 있는 지 확인하기**
     
     
-2. **compose로 실행된 컨테이너 삭제**
+6. **compose로 실행된 컨테이너 삭제**
     
     ```bash
     $ docker compose down
