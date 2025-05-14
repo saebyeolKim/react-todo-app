@@ -155,3 +155,72 @@ $ docker compose pull
 ```bash
 $ docker compose down
 ```
+
+# [실습] Docker Compose로 Redis 실행시키기
+
+### ✅ Docker CLI로 컨테이너를 실행시킬 때
+
+```html
+$ docker run -d -p 6379:6379 redis
+```
+
+### ✅ Docker Compose로 컨테이너를 실행시킬 때
+
+1. **compose.yml 파일 작성하기**
+    
+    **compose.yml**
+    
+    ```bash
+    services:
+    	my-cache-server:
+    		image: redis
+    		ports: 
+    			- 6379:6379 
+    ```
+
+    ![image](https://github.com/user-attachments/assets/42110e67-357e-4bdd-9189-9bd3515c2a7a)
+
+    
+
+1. **compose 파일 실행시키기**
+    
+    ```bash
+    $ docker compose up -d
+    ```
+    
+
+1. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    ```
+    
+2. **컨테이너 실행시킬 때 에러 없이 잘 실행됐는 지 로그 체크**
+    
+    ```
+    $ docker logs [컨테이너 ID 또는 컨테이너명]
+    ```
+    
+3. **Redis 컨테이너에 접속**
+    
+    ```
+    $ docker exec -it [컨테이너 ID 또는 컨테이너명] bash
+    ```
+    
+4. **컨테이너에서 redis 사용해보기**
+    
+    ```
+    $ redis-cli
+    
+    127.0.0.1:6379> set 1 jscode
+    127.0.0.1:6379> get 1
+    ```
+    ![image](https://github.com/user-attachments/assets/5700be69-ee15-44ce-a1ba-66c42854b131)
+
+    
+5. **compose로 실행된 컨테이너 삭제**
+    
+    ```bash
+    $ docker compose down
+    ```
