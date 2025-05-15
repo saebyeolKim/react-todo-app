@@ -375,3 +375,86 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     ```bash
     $ docker compose down
     ```
+
+# [실습] Docker Compose로 프론트엔드(Next.js) 실행시키기
+
+### ✅ Docker Compose로 프론트엔드(Next.js) 실행시키기
+
+1. **Next.js 프로젝트 만들기**
+    
+    ```bash
+    $ npx create-next-app@latest
+    ```
+    
+2. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```docker
+    FROM node:20-alpine
+    
+    WORKDIR /app
+    
+    COPY . .
+    
+    RUN npm install
+    
+    RUN npm run build
+    
+    EXPOSE 3000
+    
+    ENTRYPOINT [ "npm", "run", "start" ]
+    ```
+    
+3. **.dockerignore 작성하기**
+    
+    **.dockerignore**
+    
+    ```jsx
+    node_modules
+    ```
+    
+    이미지를 생성할 때 `npm install`을 통해 처음부터 깔끔하게 필요한 의존성만 설치한다. 따라서 호스트 컴퓨터에 있는 `node_modules`는 컨테이너로 복사해갈 필요가 없다. 
+    
+4. **compose 파일 작성하기**
+    - **참고)** compose를 작성하지 않고 Docker CLI로 실행시킬 때
+        
+        ```html
+        $ docker build -t my-web-server .
+        $ docker run -d -p 80:3000 my-web-server
+        ```
+        
+    
+    **compose.yml**
+    
+    ```html
+    services:
+      my-web-server:
+        build: .
+        ports:
+          - 3000:3000
+    ```
+    
+5. **compose 파일 실행시키기**
+    
+    ```bash
+    $ docker compose up -d **--build**
+    ```
+    
+6. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    ```
+    
+7. **localhost:3000으로 들어가보기**
+    
+    ![image](https://github.com/user-attachments/assets/23d7f896-b6c5-4c91-be4a-1ed26d43b281)
+
+    
+8. **compose로 실행된 컨테이너 삭제**
+    
+    ```bash
+    $ docker compose down
+    ```
