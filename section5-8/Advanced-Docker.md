@@ -284,3 +284,94 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     ```bash
     $ docker compose down
     ```
+
+
+# [실습] Docker Compose로 백엔드(Spring Boot) 실행시키기
+
+### ✅ Docker Compose로 백엔드(Spring Boot) 실행시키기
+
+1. **프로젝트 셋팅**
+    
+    [start.spring.io](https://start.spring.io/)
+    
+    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/8ecc70e9-bb6b-4d08-b06b-f860fb575448/Untitled.png)
+    
+    - Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
+    
+2. **간단한 코드 작성**
+    
+    **AppController**
+    
+    ```java
+    @RestController
+    public class AppController {
+      @GetMapping("/")
+      public String home() {
+        return "Hello, World!";
+      }
+    }
+    ```
+    
+3. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```docker
+    FROM openjdk:17-jdk
+    
+    COPY build/libs/*SNAPSHOT.jar /app.jar
+    
+    ENTRYPOINT ["java", "-jar", "/app.jar"]
+    ```
+    
+4. **Spring Boot 프로젝트 빌드하기**
+    
+    ```bash
+    $ ./gradlew clean build
+    ```
+    
+5. **compose 파일 작성하기**
+    - **참고)** compose를 작성하지 않고 Docker CLI로 실행시킬 때
+        
+        ```html
+        $ docker build -t hello-server .
+        $ docker run -d -p 8080:8080 hello-server
+        ```
+        
+    
+    **compose.yml**
+    
+    ```html
+    services:
+      my-server:
+        build: .
+        ports:
+          - 8080:8080
+    ```
+    
+    - `build: .` : `compose.yml`이 존재하는 디렉토리(`.`)에 있는 `Dockerfile`로 이미지를 생성해 컨테이너를 띄우겠다는 의미이다.
+    
+6. **compose 파일 실행시키기**
+    
+    ```bash
+    $ docker compose up -d **--build**
+    ```
+    - `--build` : Dockerfile 을 다시 build 해서 docker compose up -d 실행, 즉 스프링 부트 프로젝트가 바뀌면 --build 넣어줘야 한다.
+    
+7. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    ```
+    
+8. [**localhost:8080](http://localhost:8080)으로 들어가보기**
+    
+    ![image](https://github.com/user-attachments/assets/b952a3d1-00e5-48e9-b54b-946937629b36)
+
+    
+9. **compose로 실행된 컨테이너 삭제**
+    
+    ```bash
+    $ docker compose down
+    ```
