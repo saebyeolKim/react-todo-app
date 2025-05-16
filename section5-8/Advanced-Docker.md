@@ -542,3 +542,86 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     ```bash
     $ docker compose down
     ```
+
+
+# [실습] Docker Compose로 프론트엔드(HTML, CSS, Nginx) 실행시키기
+
+### ✅ Docker Compose로 프론트엔드(HTML, CSS, Nginx) 실행시키기
+
+1. **HTML, CSS 파일 만들기**
+    
+    **index.html**
+    
+    ```html
+    <!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>My Web Page</h1>
+    </body>
+    </html>
+    ```
+    
+    **주의)** Nginx의 기본 설정에 의하면 메인 페이지(첫 페이지)의 파일명을 `index.html`이라고 지어야 한다. 
+    
+    **style.css**
+    
+    ```bash
+    * {
+      color: blue;
+    }
+    ```
+    
+2. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```docker
+    FROM nginx 
+    COPY ./ /usr/share/nginx/html
+    ```
+    
+3. **compose 파일 작성하기**
+    - **참고)** compose를 작성하지 않고 Docker CLI로 실행시킬 때
+        
+        ```html
+        $ docker build -t my-web-server .
+        $ docker run -d -p 80:80 my-web-server
+        ```
+        
+    
+    **compose.yml**
+    
+    ```html
+    services:
+      my-web-server:
+        build: .
+        ports:
+          - 80:80
+    ```
+    
+4. **compose 파일 실행시키기**
+    
+    ```bash
+    $ docker compose up -d **--build**
+    ```
+    
+5. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    ```
+    
+6. [**localhost:80](http://localhost:80)으로 들어가보기**
+    
+    ![image](https://github.com/user-attachments/assets/3051bb39-b678-423c-b730-82ec5b484395)
+
+    
+7. **compose로 실행된 컨테이너 삭제**
+    
+    ```bash
+    $ docker compose down
+    ```
