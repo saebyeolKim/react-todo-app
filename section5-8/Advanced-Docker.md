@@ -618,10 +618,58 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
 6. [**localhost:80](http://localhost:80)으로 들어가보기**
     
     ![image](https://github.com/user-attachments/assets/3051bb39-b678-423c-b730-82ec5b484395)
-
     
 7. **compose로 실행된 컨테이너 삭제**
     
     ```bash
     $ docker compose down
     ```
+
+# [실습] MySQL, Redis 컨테이너 동시에 띄워보기
+
+### ✅ Docker Compose로 MySQL, Redis 실행시키기
+
+1. **compose 파일 작성하기**
+
+ 	compose.yml
+	```
+	services:
+	  my-db:
+	    image: mysql
+	    environment:
+	      MYSQL_ROOT_PASSWORD: pwd1234
+	    volumes:
+	      - ./mysql_data:/var/lib/mysql
+	    ports:
+	      - 3306:3306
+	
+	  my-cache-server:
+	    image: redis
+	    ports:
+	      - 6379:6379
+ 	```
+​
+	- `주의)` YAML 문법에서는 들여쓰기가 중요하다. 
+ 
+2. **compose 파일 실행시키기**
+
+    ```bash
+    $ docker compose up -d
+    ```
+
+    ![image](https://github.com/user-attachments/assets/581c55f0-46b9-4e4f-a1e2-b6272aad7431)
+
+
+3. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    ```
+​
+4. **compose로 실행된 컨테이너 삭제**
+
+    $ docker compose down
+
+
+
