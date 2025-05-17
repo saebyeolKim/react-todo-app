@@ -672,4 +672,234 @@ $ docker run -e MYSQL_ROOT_PASSWORD=pwd1234 -p 3306:3306 -v /Users/jaeseong/Docu
     $ docker compose down
 
 
+# [실습] Spring Boot, MySQL 컨테이너 동시에 띄워보기
+
+### ✅ Spring Boot, MySQL 컨테이너 동시에 띄워보기
+
+1. **Spring Boot 프로젝트 셋팅**
+    
+    [start.spring.io](https://start.spring.io/)
+    
+    ![Untitled](Untitled.png)
+    
+    - Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
+    - Dependencies는 `Spring Boot DevTools`, `Spring Web`, `Spring Data JPA`, `MySQL Driver`를 선택해라.
+    
+2. **간단한 코드 작성**
+    
+    **AppController**
+    
+    ```java
+    @RestController
+    public class AppController {
+      @GetMapping("/")
+      public String home() {
+        return "Hello, World!";
+      }
+    }
+    ```
+    
+3. **application.yml에 DB 연결을 위한 정보 작성하기**
+    
+    **application.yml**
+    
+    ```bash
+    spring:
+      datasource:
+        url: jdbc:mysql://localhost:3306/**mydb**
+        username: **root**
+        password: **pwd1234**
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    ```
+    
+
+1. **불필요한 테스트 코드 삭제**
+    
+    ![Untitled](Untitled%201.png)
+    
+2. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```bash
+    FROM openjdk:17-jdk
+    
+    COPY build/libs/*SNAPSHOT.jar /app.jar
+    
+    ENTRYPOINT ["java", "-jar", "/app.jar"]
+    ```
+    
+
+1. **compose.yml 파일 작성하기**
+    
+    **compose.yml**
+    
+    ```yaml
+    services:
+      my-server:
+        build: .
+        ports:
+          - 8080:8080
+    		# my-db의 컨테이너가 생성되고 healthy 하다고 판단 될 때, 해당 컨테이너를 생성한다. 
+        depends_on:
+          my-db:
+            condition: service_healthy
+      my-db:
+        image: mysql
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd1234
+          MYSQL_DATABASE: mydb # MySQL 최초 실행 시 mydb라는 데이터베이스를 생성해준다.
+        volumes:
+          - ./mysql_data:/var/lib/mysql
+        ports:
+          - 3306:3306
+        healthcheck:
+          test: [ "CMD", "mysqladmin", "ping" ] # MySQL이 healthy 한 지 판단할 수 있는 명령어
+          interval: 5s # 5초 간격으로 체크
+          retries: 10 # 10번까지 재시도
+    ```
+    
+2. **Spring Boot 프로젝트 빌드하기**
+    
+    ```bash
+    $ ./gradlew clean build
+    ```
+    
+3. **compose 파일 실행시키기**
+    
+    ```bash
+    $ docker compose up -d **--build**
+    ```
+    
+4. **compose 실행 현황 보기**
+    
+    ```bash
+    $ docker compose ps
+    $ docker ps
+    $ docker logs [Container ID]
+    ```
+    
+
+# [실습] Spring Boot, MySQL 컨테이너 동시에 띄워보기
+
+## ✅ Spring Boot, MySQL 컨테이너 동시에 띄워보기
+
+1. **Spring Boot 프로젝트 셋팅**
+
+[start.spring.io](https://start.spring.io/)
+- Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
+- Dependencies는 `Spring Boot DevTools`, `Spring Web`, `Spring Data JPA`, `MySQL Driver`를 선택해라.
+
+2. **간단한 코드 작성**
+
+**AppController**
+
+```java
+@RestController
+public class AppController {
+  @GetMapping("/")
+  public String home() {
+    return "Hello, World!";
+  }
+}
+```
+
+3. **application.yml에 DB 연결을 위한 정보 작성하기**
+
+**application.yml**
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: pwd1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+```
+
+4. **불필요한 테스트 코드 삭제**
+
+![Untitled](Untitled%201.png)
+
+5. **Dockerfile 작성하기**
+
+**Dockerfile**
+
+```dockerfile
+FROM openjdk:17-jdk
+
+COPY build/libs/*SNAPSHOT.jar /app.jar
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+6. **compose.yml 파일 작성하기**
+
+**compose.yml**
+
+```yaml
+services:
+  my-server:
+    build: .
+    ports:
+      - 8080:8080
+    # my-db의 컨테이너가 생성되고 healthy 하다고 판단 될 때, 해당 컨테이너를 생성한다. 
+    depends_on:
+      my-db:
+        condition: service_healthy
+
+  my-db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pwd1234
+      MYSQL_DATABASE: mydb # MySQL 최초 실행 시 mydb라는 데이터베이스를 생성해준다.
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping" ] # MySQL이 healthy 한 지 판단할 수 있는 명령어
+      interval: 5s # 5초 간격으로 체크
+      retries: 10 # 10번까지 재시도
+```
+
+
+![image](https://github.com/user-attachments/assets/5ccee3c8-891a-4b0d-820f-6e7e06806d7b)
+
+
+7. **Spring Boot 프로젝트 빌드하기**
+
+```bash
+$ ./gradlew clean build
+```
+
+8. **compose 파일 실행시키기**
+
+```bash
+$ docker compose up -d --build
+```
+
+9. **compose 실행 현황 보기**
+
+```bash
+$ docker compose ps
+$ docker ps
+$ docker logs [Container ID]
+```
+
+Spring Boot 컨테이너의 로그를 열어보면 아래와 같이 에러 메시지가 떠있다.  
+아래 에러 메시지는 DB와 연결이 제대로 이루어지지 않았을 때 발생하는 에러이다.
+
+![image](https://github.com/user-attachments/assets/59941d1e-4cc9-44e1-9a63-3bf1ba0fc33b)
+
+
+MySQL이 정상적으로 실행이 안 되고 있는 건지 확인하기 위해  
+DB GUI 툴(ex. Workbench, Datagrip, DBeaver 등)을 활용해 DB 연결을 해보자.  
+MySQL에 연결을 시도해보면 정상적으로 연결이 잘 되는 걸 확인할 수 있다.
+
+
+
+> ❗ 그럼 도대체 무엇이 문제길래 Spring Boot가 MySQL에 연결이 안 되는 걸까?  
+> 그 원인에 대해서 다음 강의에서 알아보자.
+
 
