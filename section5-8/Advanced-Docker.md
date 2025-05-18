@@ -1139,3 +1139,17 @@ $ docker compose up --build -d
 ### ✅ 그림으로 이해하기
 
 ![image](https://github.com/user-attachments/assets/120c8e0b-7174-4655-835b-fdfd3c03d15c)
+
+
+# 배포(Deployment)란?
+
+### ✅ 배포(Deployment)란?
+
+개발자들은 **“이제 기능 구현도 끝났고 테스트도 끝났으니 배포하자!"**라는 말을 자주 한다. 여기서 **배포**란 무슨 뜻일까? **배포(Deployment)란 다른 사용자들이 인터넷을 통해서 사용할 수 있게 만드는 걸 의미한다.** 쉽게 얘기해서 우리가 만든 웹 페이지나 서버를 다른 사람들이 사용하려면 인터넷 상에 배포가 돼있어야 한다. 
+
+![image](https://github.com/user-attachments/assets/1d8b66c6-e2cb-4383-b3fc-7000b952ca3c)
+
+
+자신의 컴퓨터에서 개발을 할 때는 localhost라는 주소로 테스트도 하고 개발을 한다. 하지만 이 localhost는 다른 컴퓨터에서는 접근이 불가능한 주소이다. 배포를 하게 되면 IP(ex. 124.16.2.1)나 도메인(ex. www.naver.com)과 같이 고유의 주소를 부여받게 되고, 다른 컴퓨터에서 그 주소로 접속할 수 있게 된다. 이게 바로 배포(Deployment)다. 
+
+따라서 어떤 서비스를 완성했다면, 그 다음 단계로 해야 하는 게 **배포(Deployment)**이다. 코딩을 배울 때도 기본적인 백엔드 서버를 만들 수 있는 역량이 갖춰졌다면, 그 다음에 배워야 하는 게 **배포(Deployment)**이다.
