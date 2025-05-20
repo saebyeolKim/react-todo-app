@@ -1585,3 +1585,132 @@ Docker를 사용하지 않았을 때 **많은 사람들이 사용하는 배포 �
 Docker의 가장 큰 장점은 **이식성**이다. **Docker만 깔려있으면 어디에서든 내가 원하는 프로젝트를 실행시킬 수 있다는 게 장점**이다. 이 때 Github을 활용해 프로젝트 코드 전체를 EC2로 옮겨 Docker 기반으로 실행시켜도 된다. 하지만 프로젝트에서 필요한 코드에 대해서만 Docker 이미지로 빌드해, EC2에서는 그 이미지만 다운받아서 실행시키는 게 훨씬 심플하다. 
 
 정리하자면 **AWS ECR을 배우는 이유는 훨씬 간단하게 프로젝트를 배포하고 실행시키기 위해서이다.**
+
+
+# [실습] AWS ECR(Elastic Container Registry) 사용해보기
+
+### ✅ AWS CLI 설치
+
+[최신 버전의 AWS CLI설치 또는 업데이트 - AWS Command Line Interface](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/getting-started-install.html)
+
+**[맥(Mac OS)]**
+
+```bash
+$ brew install awscli
+$ aws --version # 잘 출력된다면 정상 설치된 상태
+```
+
+**[윈도우(Windows)]**
+
+1. 이 링크(https://awscli.amazonaws.com/AWSCLIV2.msi)를 다운받아 설치하기
+2. cmd를 실행시켜서 아래 명령어 입력해보기
+    
+    ```bash
+    $ aws --version # 잘 출력된다면 정상 설치된 상태
+    ```
+    
+
+**[우분투(Ubuntu)]**
+
+```bash
+$ sudo apt install unzip
+$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+$ unzip awscliv2.zip
+$ sudo ./aws/install
+$ aws --version # 잘 출력된다면 정상 설치된 상태
+```
+
+### ✅ IAM 생성하기
+
+1. **IAM에서 사용자 생성하기**
+    
+    ![image](https://github.com/user-attachments/assets/f8ecab32-360c-4d49-9c2f-a31423276581)
+    
+    ![image](https://github.com/user-attachments/assets/3ce2c713-6123-4a52-a9ef-f3132cc272b6)
+    
+    ![image](https://github.com/user-attachments/assets/70992c5e-f87d-4c9a-8e0d-1ed5d3254499)
+    
+    ![image](https://github.com/user-attachments/assets/c4b2ad59-1b69-484b-85e9-990db408c3e9)
+    
+
+1. **Access Key 발급받기**
+    
+    ![image](https://github.com/user-attachments/assets/1f81b329-ce89-42ac-ad5c-899b70255be8)
+
+    ![image](https://github.com/user-attachments/assets/8411a29b-4f42-4712-ab75-4f752c8402ed)
+    
+    ![image](https://github.com/user-attachments/assets/cd552e82-0b8a-4cc5-b7b0-f4b7c58c54f9)
+    
+    ![image](https://github.com/user-attachments/assets/8d5aaaf9-da4a-46de-9a58-f5f765ad689f)
+
+
+1. AWS CLI로 액세스 키 등록하기
+    
+    ```bash
+    $ aws configure
+    AWS Access Key ID [None]: <위에서 발급한 Key id>
+    AWS Secret Access Key [None]: <위에서 발급한 Secret Access Key>
+    Default region name [None]: ap-northeast-2
+    Default output format [None]:
+    ```
+    
+
+### ✅ AWS ECR(Elastic Container Registry) 셋팅하기
+
+> Docker 이미지를 저장할 수 있는 저장소를 만들어보자.
+> 
+
+![image](https://github.com/user-attachments/assets/62f52c07-a5bc-420b-bd18-65498718114e)
+
+![image](https://github.com/user-attachments/assets/0be2f9ee-242f-485d-b518-76ee1a71fd76)
+
+
+- 일반적으로 하나의 리포지토리에는 한 종류의 이미지만 저장하고 관리한다.
+
+### ✅ 이미지 빌드해서 AWS ECR에 Push, Pull 해보기
+
+1. **Dockerfile 작성하기**
+    
+    ```bash
+    FROM openjdk:17-jdk
+    
+    ENTRYPOINT ["/bin/bash", "-c", "sleep 500"]
+    ```
+    
+
+1. **이미지 빌드 및 push 하기**
+    - **이미지 Push할 때 어떤 명령어를 써야 하는 지 가르쳐주는 위치**
+        
+        > AWS ECR에 들어가서 ‘푸시 명령 보기’ 버튼을 누르면, 어떻게 이미지를 Push하면 되는 지 친절하게 설명이 나와있다.
+        > 
+        
+        ![image](https://github.com/user-attachments/assets/43918e0c-e3f6-4317-8ec5-9132bc44c3cf)
+
+        
+        ![image](https://github.com/user-attachments/assets/d5086f00-3ba6-4def-8fa5-90fe974dab72)
+
+        
+    
+    ```bash
+    $ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
+    $ docker build -t instagram-server .
+    $ docker tag instagram-server:latest 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    ```
+    
+
+![image](https://github.com/user-attachments/assets/e1e26389-a1f4-4a1a-90a5-03ed520fa115)
+
+
+1. **이미지 Pull 받아보기**
+    
+    ![image](https://github.com/user-attachments/assets/15554696-68ee-4734-88da-ec7b3fb7569e)
+
+    
+    ```bash
+    $ docker image rm -f [Container ID] # 기존 갖고있던 이미지 지우기
+    $ docker pull 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server
+    $ docker image ls
+    ```
+    
+    - `002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server` : 이 값 자체가 이미지 이름이다. 길어서 어색해보일 뿐이다.
