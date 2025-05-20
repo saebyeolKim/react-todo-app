@@ -1320,3 +1320,69 @@ OS를 선택하는 단계이다. OS(운영체제)란 Mac, Windows 7, Windows 10,
 ![image](https://github.com/user-attachments/assets/50f98640-7d31-4af2-b364-776620178d61)
 
 스토리지의 종류를 보면 gp3 이외에도 여러가지 종류의 스토리지가 있다. 하지만 가성비가 좋은 **gp3**를 선택해주자. 용량을 **30GiB**를 설정한 이유는 프리 티어에서 30GiB까지 무료로 제공해주기 때문이다. 이 스토리지의 크기는 추후에 늘릴 수도 있으므로 처음 설정할 때 너무 큰 고민을 할 필요는 없다.
+
+# [실습] 5. EC2 접속하기
+
+### ✅ 생성된 인스턴스 정보 해석하기
+
+1. **세부 정보**
+    
+    ![image](https://github.com/user-attachments/assets/16030b59-2a7d-471b-b9fa-de89afcc7f3c)
+
+    
+    세부 정보에서 눈여겨 봐야 할 부분은 2가지 밖에 없다. **퍼블릭 IPv4 주소**와 **인스턴스 상태**이다. 
+    
+    - **퍼블릭 IPv4 주소**는 EC2 인스턴스가 생성되면서 부여받은 IP 주소이다. EC2 인스턴스에 접근하려면 이 IP 주소로 접근하면 된다.
+    - **인스턴스 상태**는 말그대로 EC2 인스턴스가 **실행 중**이라는 뜻은 컴퓨터가 켜져있다는 뜻이다.
+        
+        ![image](https://github.com/user-attachments/assets/d448038b-b3b3-45d7-93c8-eedbff66bd2e)
+
+        
+        EC2 인스턴스를 **중지**, **재부팅**, **종료**도 할 수 있다. 우리가 쓰는 컴퓨터와 아주 유사하다. **재부팅**은 말그대로 컴퓨터를 재시작시키는 걸 의미하고, **중지**는 컴퓨터를 잠시 꺼놓는 걸 의미한다. **종료**는 컴퓨터를 아예 삭제시킨다는 걸 의미한다. **EC2 인스턴스를 한 번 종료하면 도중에 취소할 수 없으니 조심해야 한다.** 
+        
+2. **보안 (보안 그룹)**
+    
+    ![image](https://github.com/user-attachments/assets/660f7d89-9111-41e5-b2a7-3a93ff6ad4dc)
+
+    
+    인스턴스 생성 시 설정한 보안 그룹에 대한 정보가 나온다. 
+    
+
+1. **네트워크**
+    
+    ![image](https://github.com/user-attachments/assets/82ddfc55-6ba9-409f-a33a-61a9db3fe3a0)
+
+    
+    퍼블릭 IPv4 주소는 생성한 EC2 인스턴스의 IP 주소를 뜻한다. 
+    
+
+1. **스토리지**
+    
+    ![image](https://github.com/user-attachments/assets/e6d3eab2-faae-4ed5-81d4-9066293b0d8c)
+
+    
+    인스턴스 생성 시 설정한 스토리지에 대한 정보가 나온다. 
+    
+2. **상태 검사**
+    
+    (잘 안 보는 창이다.)
+    
+3. **모니터링**
+    
+    EC2 인스턴스에 관련한 여러가지 정보를 볼 수 있는 창이다. AWS를 처음 입문할 때는 자주 볼 일이 없는 창이지만, 나중에 **실제 서버를 운영할 때는 자주 보게되는 창**이다. EC2 인스턴스가 정상적으로 작동하고 있는 지, EC2 인스턴스의 성능을 향상시켜주어야 하는 건 아닌 지 아래 지표를 통해 파악할 수 있다. 
+    
+    ![image](https://github.com/user-attachments/assets/6de947ac-5773-49e1-8381-6088b7cbb417)
+
+    
+
+1. **태그**
+    
+    (잘 안 보는 창이다.)
+    
+    ![image](https://github.com/user-attachments/assets/a9eed1b0-cc71-4a8f-bc6d-5e51b55214da)
+
+    
+
+### ✅ **EC2에 접속하기**
+
+![image](https://github.com/user-attachments/assets/9d938b71-6d9b-446e-94e9-39eb6b37c8b8)
