@@ -1529,3 +1529,29 @@ $ sudo nohup java -jar ec2-spring-boot-sample-0.0.1-SNAPSHOT.jar &
 ### ✅ 6. 잘 작동하는 지 확인하기
 
 ![image](https://github.com/user-attachments/assets/86e94ff3-a535-41a1-901b-52ffc33be04c)
+
+
+# Ubuntu에서 Docker, Docker Compose 설치하기
+### ✅ Ubuntu에서 Docker, Docker Compose 설치하기
+```
+$ sudo apt-get update && \
+	sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common && \
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+	sudo apt-key fingerprint 0EBFCD88 && \
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+	sudo apt-get update && \
+	sudo apt-get install -y docker-ce && \
+	sudo usermod -aG docker ubuntu && \
+	newgrp docker && \
+	sudo curl -L "https://github.com/docker/compose/releases/download/2.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+	sudo chmod +x /usr/local/bin/docker-compose && \
+	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+
+
+### ✅ 잘 설치됐는 지 확인하기
+
+```
+$ docker -v # Docker 버전 확인
+$ docker compose version # Docker Compose 버전 확인
+```
