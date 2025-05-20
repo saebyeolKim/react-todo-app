@@ -1467,3 +1467,65 @@ $ sudo pm2 start app.js
 ### ✅ 6. 잘 작동하는 지 확인하기
 
 ![image](https://github.com/user-attachments/assets/4f67a3ae-5124-4445-9914-7a38c41a41ff)
+
+# [보충 강의] 7-2. Spring Boot 서버를 EC2에 배포하기
+
+<aside>
+❗ 리눅스와 Spring Boot에 대한 수업이 아니므로, 리눅스 명령어나 Spring Boot 코드에 대한 자세한 설명은 생략한다.
+
+</aside>
+
+### ✅ 1. Ubuntu 환경에서 JDK 설치하는 법
+
+Spring Boot는 3.x.x 버전을 사용할 예정이고, JDK는 17버전을 사용할 예정이다. 그에 맞게 환경을 설치해보자. 
+
+```tsx
+$ sudo apt update && /
+sudo apt install openjdk-17-jdk -y
+```
+
+### ✅ 2. 잘 설치됐는 지 확인하기
+
+```bash
+$ java -version
+```
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/0f47cefa-3896-4c11-91cd-0d5d3f51f9f0/Untitled.png)
+
+### ✅ 3. Github으로부터 Spring Boot 프로젝트 clone하기
+
+https://github.com/JSCODE-EDU/ec2-spring-boot-sample
+
+```bash
+$ git clone https://github.com/JSCODE-EDU/ec2-spring-boot-sample.git
+$ cd ec2-spring-boot-sample
+```
+
+### ✅ 4. `application.yml` 파일 직접 만들기
+
+`application.yml`와 같은 민감한 정보가 포함된 파일은 Git으로 버전 관리를 하지 않는게 일반적이다. 따라서 `application.yml` 파일은 별도로 EC2 인스턴스에 올려주어야 한다. 하지만 `application.yml` 파일을 EC2 인스턴스에 올리는 작업보다는, `application.yml` 파일을 직접 만드는 게 훨씬 간단하다. 
+
+**src/main/resources/application.yml**
+
+```bash
+server:
+  port: 80
+```
+
+### ✅ 5. 서버 실행시키기
+
+```bash
+$ ./gradlew clean build # 기존 빌드된 파일을 삭제하고 새롭게 JAR로 빌드
+$ cd ~/ec2-spring-boot-sample/build/libs
+$ sudo java -jar ec2-spring-boot-sample-0.0.1-SNAPSHOT.jar
+```
+
+**참고) 백그라운드에서 Spring Boot 실행시키기**
+
+```jsx
+$ sudo nohup java -jar ec2-spring-boot-sample-0.0.1-SNAPSHOT.jar &
+```
+
+### ✅ 6. 잘 작동하는 지 확인하기
+
+![image](https://github.com/user-attachments/assets/86e94ff3-a535-41a1-901b-52ffc33be04c)
