@@ -1555,3 +1555,33 @@ $ sudo apt-get update && \
 $ docker -v # Docker 버전 확인
 $ docker compose version # Docker Compose 버전 확인
 ```
+
+# AWS ECR(Elastic Container Registry)이 뭘까? 왜 배울까?
+
+### ✅ AWS ECR이 뭘까?
+
+필요한 이미지를 다운로드 받을 때 Dockerhub이라는 곳에서 다운받는다고 했었다. Dockerhub에서는 이미지를 저장 및 다운받을 수 있는 저장소 역할을 한다고도 했다. 
+
+→ [이미지(Image) 다운로드](https://www.notion.so/Image-8c40d4d34bfa495fab2a14f20efd4cd7?pvs=21) 
+
+Dockerhub과 동일한 역할을 하는 서비스가 하나 더 있다. 그게 바로 AWS ECR이다. AWS ECR도 이미지를 저장 및 다운받을 수 있는 저장소 역할을 한다. 우리는 이 AWS ECR에 대해 배울 것이다. 
+
+### ✅ 왜 Dockerhub 대신에 AWS ECR을 사용하는가?
+
+최근에는 AWS 클라우드 환경에서 인프라를 구축하는 일이 많아졌다. AWS ECR을 사용하면 다른 AWS Resource와의 연동이 편하고, AWS 내에서 한 번에 관리할 수 있기에 편하다는 장점이 있다. 
+
+(물론, Dockerhub을 사용해도 크게 문제는 없다 😊)
+
+### ✅ AWS ECR을 왜 배우는지?
+
+![image](https://github.com/user-attachments/assets/8953f30a-74e0-4e48-a6b4-624a5a23958c)
+
+
+Docker를 사용하지 않았을 때 **많은 사람들이 사용하는 배포 전략 중 하나는 Github을 활용하는 방법**이다. 프로젝트 코드를 Github에 Push 한 뒤에, AWS EC2에 접속해서 해당 코드를 Pull 받아서 실행시키는 방식을 많이 사용한다. 이 방식은 프로젝트 코드 전체를 EC2로 이동시켜야 하며, 프로젝트 코드를 실행시킬 런타임 환경(Node, JDK 등)도 설치되어 있어야만 실행이 된다. 
+
+![image](https://github.com/user-attachments/assets/5e91f799-cfb0-48aa-b960-8f95188c2a37)
+
+
+Docker의 가장 큰 장점은 **이식성**이다. **Docker만 깔려있으면 어디에서든 내가 원하는 프로젝트를 실행시킬 수 있다는 게 장점**이다. 이 때 Github을 활용해 프로젝트 코드 전체를 EC2로 옮겨 Docker 기반으로 실행시켜도 된다. 하지만 프로젝트에서 필요한 코드에 대해서만 Docker 이미지로 빌드해, EC2에서는 그 이미지만 다운받아서 실행시키는 게 훨씬 심플하다. 
+
+정리하자면 **AWS ECR을 배우는 이유는 훨씬 간단하게 프로젝트를 배포하고 실행시키기 위해서이다.**
