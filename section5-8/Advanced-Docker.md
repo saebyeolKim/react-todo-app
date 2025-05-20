@@ -1402,3 +1402,68 @@ EC2 인스턴스를 생성하면 IP를 할당받는다. 하지만 이렇게 할�
 ### ✅ 탄력적 IP 설정 방법
 
 ![image](https://github.com/user-attachments/assets/66d6e3c9-907c-49dc-b099-7d032f4b0c06)
+
+
+# [실습] 7. Express 서버를 EC2에 배포하기
+
+<aside>
+❗ 리눅스와 Express에 대한 수업이 아니므로, 리눅스 명령어나 Express 코드에 대한 자세한 설명은 생략한다.
+
+</aside>
+
+### ✅ 1. Ubuntu 환경에서 Node.js 설치하는 법
+
+Ubuntu 환경에서 Express 서버를 실행시키려면 Node.js가 설치되어 있어야 한다. 그래서 Ubuntu에 우선 Node.js를 설치해보자. 
+
+https://github.com/nodesource/distributions
+
+```tsx
+$ sudo su
+$ apt-get update && /
+apt-get install -y ca-certificates curl gnupg && /
+mkdir -p /etc/apt/keyrings && /
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && /
+NODE_MAJOR=20 && /
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list && /
+apt-get update && /
+apt-get install nodejs -y
+```
+
+### ✅ 2. 잘 설치됐는 지 확인하기
+
+```bash
+$ node -v
+```
+
+### ✅ 3. Github으로부터 Express 프로젝트 clone하기
+
+https://github.com/JSCODE-EDU/ec2-express-sample
+
+```bash
+$ git clone https://github.com/JSCODE-EDU/ec2-express-sample
+$ cd ec2-express-sample
+$ npm i
+```
+
+### ✅ 4. `.env` 파일 직접 만들기
+
+`.env`와 같은 민감한 파일은 Git으로 버전 관리를 하지 않는게 일반적이다. 따라서 `.env` 파일은 별도로 EC2 인스턴스에 올려주어야 한다. 하지만 `.env` 파일을 EC2 인스턴스에 올리는 작업보다는, `.env` 파일을 직접 만드는 게 훨씬 간단하다. 
+
+**.env**
+
+```bash
+DATABASE_NAME=my_database
+```
+
+### ✅ 5. pm2 설치해서 서버 실행시키기
+
+Node 기반의 서버는 `pm2`를 활용해서 많이 실행시킨다. 서비스를 운영하는 데 있어서 유용한 기능들을 `pm2`가 많이 가지고 있기 때문이다. 
+
+```bash
+$ sudo npm i -g pm2
+$ sudo pm2 start app.js
+```
+
+### ✅ 6. 잘 작동하는 지 확인하기
+
+![image](https://github.com/user-attachments/assets/4f67a3ae-5124-4445-9914-7a38c41a41ff)
