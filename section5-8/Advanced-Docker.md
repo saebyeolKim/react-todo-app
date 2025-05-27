@@ -1714,3 +1714,176 @@ $ aws --version # 잘 출력된다면 정상 설치된 상태
     ```
     
     - `002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server` : 이 값 자체가 이미지 이름이다. 길어서 어색해보일 뿐이다.
+
+# [실습] AWS EC2에 Spring Boot 배포하기
+
+<aside>
+👨🏻‍🏫 AWS EC2에 Spring Boot 프로젝트만 배포를 해야하는 상황이라고 가정하자.
+
+</aside>
+
+### ✅ Docker CLI로 배포하기
+
+1. **로컬 환경에서 프로젝트 셋팅**
+    
+    [start.spring.io](https://start.spring.io/)
+    
+    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/8ecc70e9-bb6b-4d08-b06b-f860fb575448/Untitled.png)
+    
+    - Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
+    
+2. **간단한 코드 작성**
+    
+    **AppController**
+    
+    ```java
+    @RestController
+    public class AppController {
+      @GetMapping("/")
+      public String home() {
+        return "Docker, World!";
+      }
+    }
+    ```
+    
+3. **Dockerfile 작성하기**
+    
+    **Dockerfile**
+    
+    ```docker
+    FROM openjdk:17-jdk
+    
+    COPY build/libs/*SNAPSHOT.jar app.jar
+    
+    ENTRYPOINT ["java", "-jar", "/app.jar"]
+    ```
+    
+
+1. **Spring Boot 프로젝트 빌드하기**
+    
+    ```bash
+    $ ./gradlew clean build
+    $ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
+    $ docker build -t instagram-server .
+    $ docker tag instagram-server:latest 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    ```
+    
+
+1. **AWS EC2에서 AWS CLI 설치 및 액세스 키 등록하기**
+    
+    (아래 설명 참고하기)
+    
+    [[실습] AWS ECR(Elastic Container Registry) 사용해보기](https://www.notion.so/AWS-ECR-Elastic-Container-Registry-26a540f1c41d4340bba5820429d5d834?pvs=21) 
+    
+
+1. **AWS ECR로부터 이미지 다운받아 컨테이너 띄우기**
+    
+    ```bash
+    $ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
+    $ docker pull 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server 
+    $ docker run -d -p 8080:8080 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server
+    ```
+    
+
+> **혹시나 아래와 같은 에러가 발생했다면?**
+> 
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/d6b572fe-435b-4d1b-af37-bde960c007e4/Untitled.png)
+
+이 에러의 원인은 CPU 아키텍처 환경이 다르다는 뜻이다. 조금 더 자세히 설명하자면, 이미지 빌드는 M1과 같은 ARM 기반의 환경에서 진행하고, 이미지 실행은 ARM 기반의 환경이 아닌 곳에서 할 때 위와 같은 에러가 발생한다.
+
+위 에러를 해결하기 위해서는 이미지를 실행시키고자 하는 CPU 아키텍처에 맞춰서 이미지를 빌드해야 한다. 로컬 환경에서 아래와 같이 다시 빌드한 뒤 AWS ECR로 Push하자. 
+
+```
+$ ./gradlew clean build
+$ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
+$ docker build **--platform linux/amd64** -t instagram-server .
+$ docker tag instagram-server:latest 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+$ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+```
+
+- **AWS EC2의 CPU 아키텍처 확인하는 방법**
+    
+    ```
+    $ lscpu
+    ```
+    
+    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/15f80b8f-63ba-4c10-8fb9-91b8f50f4d07/Untitled.png)
+    
+    - `x86_64` = `linux/amd64`
+    
+
+1. **잘 작동하는 지 확인하기**
+    
+    ```
+    $ docker ps
+    $ docker logs
+    ```
+    
+    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/3f7f8a57-0c02-4716-a6c5-bbbc86f4b2b8/Untitled.png)
+    
+
+### ✅ Docker Compose로 배포하기
+
+Docker Compose의 장점 중 하나는 **복잡한 명령어로 실행시키던 걸 간소화 시킬 수 있다는 점**이 있다. 따라서 Docker CLI 말고 Docker Compose를 활용해서 Spring Boot 서버를 배포해보자. 
+
+1. **폴더 만들기**
+    
+    ```
+    $ mkdir instagram-server
+    ```
+    
+2. **AWS EC2에 compose.yml 만들기**
+    
+    **compose.yml**
+    
+    ```
+    services:
+      instagram-server:
+        image: 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+        ports:
+          - 8080:8080
+    ```
+    
+3. **실행시켜보기**
+    
+    ```
+    $ docker compose up --build -d
+    ```
+    
+    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/ca127cc6-a59c-4813-8b54-817ac3e2797d/Untitled.png)
+    
+
+1. **새로운 기능이 업데이트 됐다고 가정**
+    
+    **AppController**
+    
+    ```
+    @RestController
+    public class AppController {
+      @GetMapping("/")
+      public String home() {
+        **return "New, World!";**
+      }
+    }
+    ```
+    
+    ```
+    $ ./gradlew clean build
+    $ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
+    $ docker build **--platform linux/amd64** -t instagram-server .
+    $ docker tag instagram-server:latest 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+    ```
+    
+
+1. **AWS EC2에 업데이트 된 내용 반영하기**
+    
+    ```
+    $ docker compose pull
+    $ docker compose up --build -d
+    ```
+    
+    - `docker compose pull` : `compose.yml`에 작성된 이미지를 다운로드 또는 업데이트 할 때 사용한다.
+    - 
