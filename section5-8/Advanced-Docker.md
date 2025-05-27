@@ -1728,7 +1728,8 @@ $ aws --version # 잘 출력된다면 정상 설치된 상태
     
     [start.spring.io](https://start.spring.io/)
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/8ecc70e9-bb6b-4d08-b06b-f860fb575448/Untitled.png)
+    ![image](https://github.com/user-attachments/assets/752e8f99-6870-49ea-b217-1b8608e3914d)
+
     
     - Java 17 버전을 선택하자. 아래 과정을 Java 17 버전을 기준으로 진행할 예정이다.
     
@@ -1789,7 +1790,8 @@ $ aws --version # 잘 출력된다면 정상 설치된 상태
 > **혹시나 아래와 같은 에러가 발생했다면?**
 > 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/d6b572fe-435b-4d1b-af37-bde960c007e4/Untitled.png)
+![image](https://github.com/user-attachments/assets/1d58c2d2-ba2d-4474-83d6-36d927508bdc)
+
 
 이 에러의 원인은 CPU 아키텍처 환경이 다르다는 뜻이다. 조금 더 자세히 설명하자면, 이미지 빌드는 M1과 같은 ARM 기반의 환경에서 진행하고, 이미지 실행은 ARM 기반의 환경이 아닌 곳에서 할 때 위와 같은 에러가 발생한다.
 
@@ -1809,7 +1811,8 @@ $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server
     $ lscpu
     ```
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/15f80b8f-63ba-4c10-8fb9-91b8f50f4d07/Untitled.png)
+    ![image](https://github.com/user-attachments/assets/ec885c68-0151-4f70-9845-6b1cb15eba28)
+
     
     - `x86_64` = `linux/amd64`
     
@@ -1821,7 +1824,8 @@ $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server
     $ docker logs
     ```
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/3f7f8a57-0c02-4716-a6c5-bbbc86f4b2b8/Untitled.png)
+    ![image](https://github.com/user-attachments/assets/4a0f539c-5621-465d-b116-20c6ae9d26b8)
+
     
 
 ### ✅ Docker Compose로 배포하기
@@ -1852,7 +1856,8 @@ Docker Compose의 장점 중 하나는 **복잡한 명령어로 실행시키던 
     $ docker compose up --build -d
     ```
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/ca127cc6-a59c-4813-8b54-817ac3e2797d/Untitled.png)
+    ![image](https://github.com/user-attachments/assets/5590ce13-d20f-4f7b-afff-b309f9f34b2f)
+
     
 
 1. **새로운 기능이 업데이트 됐다고 가정**
@@ -1886,4 +1891,69 @@ Docker Compose의 장점 중 하나는 **복잡한 명령어로 실행시키던 
     ```
     
     - `docker compose pull` : `compose.yml`에 작성된 이미지를 다운로드 또는 업데이트 할 때 사용한다.
-    - 
+
+    ![image](https://github.com/user-attachments/assets/fd95bf79-6049-415c-9ebe-30aab6a0c1db)
+
+
+# [실습] AWS EC2에 Spring Boot, MySQL, Redis 배포하기
+
+<aside>
+💡 [[실습] AWS EC2에 Spring Boot 배포하기]
+	
+	(https://www.notion.so/AWS-EC2-Spring-Boot-91cb5f42afa04e39b6c80a462187d75b?pvs=21) 
+
+위 구성(Spring Boot)에서 MySQL과 Redis를 같이 한 번에 배포해야 하는 상황이라고 가정하자. AWS EC2라고 해서 지금까지 배운 내용과 크게 다를 건 없다. compose.yml에 MySQL, Redis의 내용만 추가해주면 끝이다.
+
+</aside>
+
+### ✅ AWS EC2에서 Spring Boot, MySQL, Redis 배포하기
+
+1. **compose.yml에 MySQL, Redis 관련 내용 추가하기**
+    
+    **compose.yml**
+    
+    ```
+    services:
+      instagram-server:
+        image: 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
+        ports:
+          - 8080:8080
+        depends_on:
+          my-db:
+            condition: service_healthy
+          my-cache-server:
+            condition: service_healthy
+      my-db:
+        image: mysql
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd1234
+          MYSQL_DATABASE: mydb
+        volumes:
+          - ./mysql_data:/var/lib/mysql
+        ports:
+          - 3306:3306
+        healthcheck:
+          test: [ "CMD", "mysqladmin", "ping" ]
+          interval: 5s
+          retries: 10
+      my-cache-server:
+        image: redis
+        ports:
+          - 6379:6379
+        healthcheck:
+          test: [ "CMD", "redis-cli", "ping" ]
+          interval: 5s
+          retries: 10
+    ```
+    
+
+1. **컨테이너 실행시키기**
+    
+    ```bash
+    $ docker compose up -d --build
+    
+    # 잘 실행되고 있는 지 확인
+    $ docker ps
+    $ docker compose ps
+    $ docker compose logs 
+    ```
