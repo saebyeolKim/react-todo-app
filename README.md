@@ -3,8 +3,8 @@
 ## 📂 목차
 
 ### 📦 기본 과정
-- [Section 1-4: 기본 Docker](docker/section1-4/Basic-Docker.md)
-- [Section 5-6: 고급 Docker](docker/section5-8/Advanced-Docker.md)
+- [Section 1-4: 기본 Docker](section1-4/Basic-Docker.md)
+- [Section 5-6: 고급 Docker](section5-8/Advanced-Docker.md)
 
 # 🐦  Redis 학습 자료 모음
 ---
