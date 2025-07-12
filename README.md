@@ -14,8 +14,9 @@
 - [Section 1: redis 시작하기](redis/section1.md)
 
 # Kubernates 학습 자료 모음
-https://jscode.notion.site/12711062ff078055bd91e22b3f3e8992?pvs=4
 ---
+https://jscode.notion.site/12711062ff078055bd91e22b3f3e8992?pvs=4
+
 ## 📂 목차
 
 ### 📦 기본 과정
