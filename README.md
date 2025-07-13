@@ -21,3 +21,4 @@ https://jscode.notion.site/12711062ff078055bd91e22b3f3e8992?pvs=4
 
 ### 📦 기본 과정
 - [Section 1: 쿠버네티스 기본 개념](kubernates/section1&2.md)
+- [Section 7: AWS EC2에서 쿠버네티스를 활용해 서버 배포하기](kubernates/section7.md)
