@@ -1,4 +1,5 @@
-<img width="2048" height="672" alt="image" src="https://github.com/user-attachments/assets/8c0cc7ae-ba9a-4a48-8014-58571c464c4e" /><img width="439" height="427" alt="image" src="https://github.com/user-attachments/assets/8fdd5b62-64d9-4695-b13f-b3f6bd7f004e" /># EC2 에서 도커/쿠버네티스 설치하기 (k3s)
+
+# EC2 에서 도커/쿠버네티스 설치하기 (k3s)
 ### EC2 인스턴스 생성하기
 <img width="828" height="828" alt="image" src="https://github.com/user-attachments/assets/8bb67c48-8644-4976-8194-fbe1f4efa032" />
 <img width="828" height="476" alt="image" src="https://github.com/user-attachments/assets/1b0da72f-717b-4d00-bf71-28d8e70c6348" />
@@ -137,10 +138,12 @@ EC2 페이지에서 보안그룹 생성 한 뒤에 기존 VPC 보안 그룹 선�
 ```
 $ git clone https://github.com/JSCODE-COURSE/kubernetes-backend.git
 ```
+
 2. 쿠버네티스 매니페스트 파일 클론 받기
 ```
 git clone https://github.com/JSCODE-COURSE/kubernetes-manifests.git
 ```
+
 3. **코드 살펴보기**
     
     **[Spring Boot 프로젝트]**
@@ -163,9 +166,9 @@ git clone https://github.com/JSCODE-COURSE/kubernetes-manifests.git
 <img width="439" height="427" alt="image" src="https://github.com/user-attachments/assets/4e224cc6-a252-40b1-9a2d-da425b809482" />
 <img width="2048" height="575" alt="image" src="https://github.com/user-attachments/assets/9f1cdd2e-1adc-4cfc-8bde-c662098f0815" />
 3. AWS CLI로 액세스 키 등록하기
+
 ```
 $ aws configure
-
 AWS Access Key ID [None]: <위에서 발급한 Key id>
 AWS Secret Access Key [None]: <위에서 발급한 Secret Access Key>
 Default region name [None]: ap-northeast-2
@@ -176,9 +179,9 @@ Default output format [None]:
 5. 푸시 명령 확인하기
 <img width="1648" height="1614" alt="image" src="https://github.com/user-attachments/assets/b6dec11a-55bf-47cf-b0c4-ba88b4afda83" />
 6. 로컬 환경에서 Spring Boot 프로젝트를 Docker 이미지로 빌드한 후에 ECR로 Push하기
+
 ```
 $ ./gradlew clean build
-
 $ aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com
 $ docker build -t kube-ecr .
 $ docker tag kube-ecr:latest 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/kube-ecr:1.0
@@ -190,3 +193,48 @@ $ docker push 002177417362.dkr.ecr.ap-northeast-2.amazonaws.com/kube-ecr:1.0
 # EC2가 ECR로부터 이미지를 Pull 받아올 수 있게 권한 부여하기
 ### EC2가 ECR로부터 이미지를 Pull 받아올 수 있게 권한 부여하기
 1. AWS CLI 설치하기
+```
+$ cd ~
+$ sudo apt install unzip
+$ curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+$ unzip awscliv2.zip
+$ sudo ./aws/install
+$ aws --version # 잘 출력된다면 정상 설치된 상태
+```
+
+2. IAM 사용자 만들기
+<img width="2048" height="786" alt="image" src="https://github.com/user-attachments/assets/6fc8c93c-ac61-47b5-9486-f56d44d40e79" />
+<img width="2042" height="618" alt="image" src="https://github.com/user-attachments/assets/dc260ba2-83c9-4e40-a415-a41f182f0c41" />
+<img width="2048" height="522" alt="image" src="https://github.com/user-attachments/assets/a60bfab3-d880-4c9e-a9b8-2f53d3da0ced" />
+<img width="2048" height="1352" alt="image" src="https://github.com/user-attachments/assets/4c527d30-445a-495f-8841-1408ebdae21e" />
+
+3. Access Key 발급받기
+<img width="2048" height="853" alt="image" src="https://github.com/user-attachments/assets/293c970a-5caf-43bc-9b91-4addb406ee69" />
+<img width="2048" height="1646" alt="image" src="https://github.com/user-attachments/assets/7f19fc4f-ade6-4f17-8770-4b0849ed8c24" />
+<img width="2048" height="582" alt="image" src="https://github.com/user-attachments/assets/d5faa919-bc11-4a9c-9b56-9594b4ed970b" />
+<img width="2048" height="1146" alt="image" src="https://github.com/user-attachments/assets/a37ef94d-83a0-4d57-84c6-312e830f8275" />
+
+4. AWS CLI로 액세스 키 등록하기
+```
+$ aws configure
+AWS Access Key ID [None]: <위에서 발급한 Key id>
+AWS Secret Access Key [None]: <위에서 발급한 Secret Access Key>
+Default region name [None]: ap-northeast-2
+Default output format [None]:
+```
+5. ECR에 접근할 수 있는 권한 인증하기
+ECR의 레포지토리 페이지로 들어가서 푸시 명령에서 첫 번째 명령어를 복사한 뒤에 EC2에서 실행시키자. 
+<img width="1664" height="900" alt="image" src="https://github.com/user-attachments/assets/8a02a304-2199-4955-8f18-1a28fb406801" />
+
+6. 쿠버네티스가 ECR로부터 이미지를 받아올 때 인증을 할 수 있도록 Secret 추가하기
+```
+$ kubectl create secret generic regcred --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json --type=kubernetes.io/dockerconfigjson
+```
+- `kubectl create secret` : 시크릿(Secret) 만드는 명령어
+- `generic` : 시크릿(Secret)의 타입 중 하나 (= `Opaque`)
+- `regcred` : 시크릿(Secret) 이름
+
+7. 잘 생성됐는 지 확인
+```
+$ kubectl get secret
+```
