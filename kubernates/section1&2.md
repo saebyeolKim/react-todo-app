@@ -1,4 +1,4 @@
-# 쿠버네티스 기본 개념
+<img width="1046" height="172" alt="image" src="https://github.com/user-attachments/assets/e95dcb75-bbec-4095-9b34-fbd86b33bea3" /># 쿠버네티스 기본 개념
 ### 쿠버네티스란?
 쿠버네티스는 다수의 컨테이너(도커 컨테이너)를 효율적으로 배포, 확장 및 관리하기 위한 오픈 소스 시스템이다. 쿠버네티스는 docker compose 와 비슷한 느낌을 가지고 있다. docker compose 의 확장판이라고 생각하면 편하다.
 
@@ -231,3 +231,334 @@ $ kubectl port-forward pod/spring-pod 12345:8080
 ```
 
 <img width="552" height="205" alt="image" src="https://github.com/user-attachments/assets/7618b632-eef8-4168-886a-3fff2504fe79" />
+
+# [예제] 백엔드(Nest.js) 서버를 파드(Pod)로 띄워보기
+### 백엔드(Nest.js) 서버를 파드(Pod)로 띄워보기
+1. Nest.js 프로젝트 만들기
+```
+npm i -g @nestjs/cli # Nest CLI 설치
+nest new nest-server # nest new {프로젝트명}
+```
+
+2. 프로젝트 실행시켜보기
+```
+$ npm i
+$ npm run start
+```
+<img width="633" height="284" alt="image" src="https://github.com/user-attachments/assets/8d102c33-ec7e-4a17-bcf1-770f8490dae5" />
+
+3. Dockerfile 작성하기
+```Docker
+FROM node
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+
+EXPOSE 3000
+
+ENTRYPOINT [ "node", "dist/main.js" ]
+```
+
+4. .dockerignore 작성하기
+```
+node_modules
+```
+
+5. Dockerfile을 바탕으로 이미지 빌드하기
+```
+$ docker build -t nest-server .
+$ docker image ls
+```
+
+6. 매니페스트 파일 작성하기
+nest-pod.yaml
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nest-pod
+spec:
+  containers:
+    - name: nest-container
+      image: nest-server
+      imagePullPolicy: IfNotPresent
+```
+7. 매니페스트 파일을 기반으로 파드(Pod) 생성하기
+```
+$ kubectl apply -f nest-pod.yaml 
+```
+
+8. 파드(Pod)가 잘 생성됐는 지 확인
+```
+$ kubectl get pods
+```
+9. 포트 포워딩으로 Nest.js 서버가 실행됐는 지 확인
+```
+$ kubectl port-forward nest-pod 3000:3000
+```
+<img width="506" height="255" alt="image" src="https://github.com/user-attachments/assets/d5970f92-2c2b-48bb-8c7f-84893427a874" />
+
+10. 파드 삭제하기
+```
+$ kubectl delete pod nest-pod
+```
+
+### [예제] 프론트엔드(HTML, CSS, Nginx) 서버를 파드(Pod)로 띄워보기
+# 프론트엔드(HTML, CSS, Nginx) 서버를 파드(Pod)로 띄워보기
+1. HTML, CSS 파일 만들기
+```HTML
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>My Web Page</h1>
+</body>
+</html>
+```
+
+```css
+* {
+  color: blue;
+}
+```
+2. 실행시켜보기
+
+3. Dockerfile 작성하기
+```Docker
+FROM nginx 
+COPY ./ /usr/share/nginx/html
+```
+
+4. Dockerfile을 바탕으로 이미지 빌드하기
+```
+$ docker build -t my-web-server .
+```
+
+5. 이미지가 잘 생성됐는 지 확인하기
+```
+$ docker image ls
+```
+
+6. 매니페스트 파일 작성하기
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-server-pod
+spec:
+  containers:
+    - name: web-server-container
+      image: my-web-server
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+```
+
+7. 파드(Pod)가 잘 생성됐는 지 확인
+```
+$ kubectl apply -f web-server-pod.yaml 
+```
+
+8. 포트 포워딩으로 웹 서버가 실행됐는 지 확인
+<img width="631" height="242" alt="image" src="https://github.com/user-attachments/assets/9994fc0d-06c6-4941-801e-d7bca8598013" />
+
+9. 파드 삭제하기
+```
+$ kubectl delete pod web-server-pod
+```
+
+### [예제] 백엔드(Spring Boot) 서버 3개 띄워보기
+# 백엔드(Spring Boot) 서버 3개 띄워보기
+1. Spring Boot 프로젝트 셋팅
+2. 간단한 코드 작성
+```Java
+@RestController
+public class AppController {
+  @GetMapping("/")
+  public String home() {
+    System.out.println("Hello, World!"); // 추후 디버깅용
+    return "Hello, World!";
+  }
+}
+```
+
+3. 프로젝트 실행시켜보기
+
+4. Dockerfile 작성하기
+```Docker
+FROM openjdk:17-jdk
+
+COPY build/libs/*SNAPSHOT.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+5. Spring Boot 프로젝트 빌드하기
+```
+$ ./gradlew clean build
+```
+
+6. Dockerfile을 바탕으로 이미지 빌드하기
+```
+$ docker build -t spring-server .
+```
+
+7. 이미지가 잘 생성됐는 지 확인하기
+```
+$ docker image ls
+```
+
+8. 매니페스트 파일 작성하기
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod-1
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
+      
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod-2
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
+      
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod-3
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8080
+```
+
+9. 매니페스트 파일을 기반으로 파드(Pod) 생성하기
+```
+$ kubectl apply -f spring-pod.yaml
+```
+
+10. 파드(Pod)가 잘 생성됐는 지 확인
+```
+$ kubectl get pods
+```
+
+# [보충 강의] 파드(Pod) 디버깅 하는 방법
+### 파드(Pod)가 정상적으로 실행되지 않았을 때
+1. 매니페스트 파일 생성하기
+nginx-pod.yaml
+```
+apiVersion: v1 # Pod를 생성할 때는 v1이라고 기재한다. (공식 문서)
+kind: Pod # Pod를 생성한다고 명시
+metadata:
+  name: nginx-pod # Pod에 이름 붙이는 기능
+spec:
+  containers:
+    - name: nginx-container # 생성할 컨테이너의 이름
+      image: nginx:1.26.4 # 컨테이너를 생성할 때 사용할 Docker 이미지
+      ports:
+        - containerPort: 80 # 해당 컨테이너가 어떤 포트를 사용하는 지 명시적으로 표현
+```
+
+2. 파드 생성하기
+```
+$ kubectl apply -f nginx-pod.yaml
+$ kubectl get pods # 파드가 잘 생성됐는 지 파드 조회해보기
+```
+<img width="1046" height="172" alt="image" src="https://github.com/user-attachments/assets/e8778232-38b1-4523-afcb-6ca5b2b2e827" />
+파드를 관리하고 생성하다보면 위와 같이 파드 생성에 실패하는 경우가 종종 생긴다. 위의 출력값을 보면 STATUS가 ErrImagePull인걸 보고 에러가 발생했음을 짐작할 수 있다. 하지만 구체적인 에러 메시지가 아니기에 STATUS만 보고 문제점을 단번에 알아차리기 어려운 경우가 종종 있다. 어떻게 에러 메시지를 구체적으로 확인하는 지 알아보자. 
+
+3. 에러 메시지 확인하기
+```
+# kubectl describe pods [파드명]
+$ kubectl describe pods nginx-pod # nginx-pod 파드의 세부 정보 조회
+```
+
+### 파드(Pod)의 로그를 확인하고 싶을 때
+1. 매니페스트 파일 수정하기
+nginx-pod.yaml
+```
+apiVersion: v1 # Pod를 생성할 때는 v1이라고 기재한다. (공식 문서)
+kind: Pod # Pod를 생성한다고 명시
+metadata:
+  name: nginx-pod # Pod에 이름 붙이는 기능
+spec:
+  containers:
+    - name: nginx-container # 생성할 컨테이너의 이름
+      image: nginx:1.26.2 # 컨테이너를 생성할 때 사용할 Docker 이미지
+      ports:
+        - containerPort: 80 # 해당 컨테이너가 어떤 포트를 사용하는 지 명시적으로 표현
+```
+
+2. 변경사항 적용시키기
+```
+$ kubectl apply -f nginx-pod.yaml
+```
+
+3. 파드의 로그 확인하기
+```
+# kubectl logs [파드명]
+$ kubectl logs nginx-pod # 파드 로그 확인하기
+```
+
+###  파드(Pod)에 접속하고 싶을 때
+```
+# kubectl exec -it [파드명] -- bash
+$ kubectl exec -it nginx-pod -- bash
+# kubectl exec -it [파드명] -- sh
+$ kubectl exec -it nginx-pod -- sh
+```
+
+- 도커에서 컨테이너로 접속하는 명령어(`docker exec -it [컨테이너 ID] bash`)와 비슷하다.
+- 컨테이너 종류에 따라 컨테이너 내부에 `bash`가 설치되어 있을 수도 있고, `sh`가 설치되어 있을 수도 있다. 만약 `bash`가 설치되어 있지 않은데 `$ kubectl exec -it nginx-pod -- bash` 명령어를 입력하면 에러가 뜨면서 컨테이너로 접속이 안 된다. 그럴 때는 `$ kubectl exec -it nginx-pod -- sh`으로 접속을 시도해보자.
+
+# [요약] 지금까지 나온 명령어 정리
+
+```bash
+$ kubectl get pods # 파드 조회
+
+# kubectl port-forward pod/[파드명] [로컬에서의 포트]/[파드에서의 포트]
+$ kubectl port-forward pod/nginx-pod 80:80 # 파드 포트 포워딩
+
+# kubectl delete pod [파드명]
+$ kubectl delete pod nginx-pod # 파드 삭제
+
+# kubectl describe pods [파드명]
+$ kubectl describe pods nginx-pod # 파드 세부 정보 조회하기
+
+# kubectl logs [파드명]
+$ kubectl logs nginx-pod # 파드 로그 확인하기
+
+# kubectl exec -it [파드명] -- bash
+$ kubectl exec -it nginx-pod -- bash # 파드 내부로 접속하기
+
+# kubectl exec -it [파드명] -- sh
+$ kubectl exec -it nginx-pod -- sh
+
+# kubectl apply -f [파일명]
+$ kubectl apply -f nginx-pod.yaml # 매니페스트 파일에 적혀져있는 리소스(파드 등) 생성
+```
