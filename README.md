@@ -4,9 +4,9 @@
 
 ### 📂 목차
 
-- 🔹 [Section 1–4: 기본 Docker](section1-4/Basic-Docker.md)  
+- 🔹 [Section 1–4: 기본 Docker](docker/section1-4/Basic-Docker.md)  
   → 이미지, 컨테이너, 볼륨, 네트워크 등 기초 개념 학습  
-- 🔸 [Section 5–6: 고급 Docker](section5-8/Advanced-Docker.md)  
+- 🔸 [Section 5–6: 고급 Docker](docker/section5-8/Advanced-Docker.md)  
   → 멀티컨테이너, Docker Compose, 보안 및 실전 예제
 
 ---
