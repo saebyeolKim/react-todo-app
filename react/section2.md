@@ -1,5 +1,5 @@
 # 간단한 To-Do 앱 만들며 리액트 익히기
-### Vite 로 설치된 리액트 기본 구조 살펴보기
+### 1. Vite 로 설치된 리액트 기본 구조 살펴보기
 <img width="256" height="405" alt="image" src="https://github.com/user-attachments/assets/a9450220-6a01-4e26-b0a2-92e52299b86e" />
 
 - src : 폴더안에 대부분의 리액트 소스코드가 들어간다.
@@ -12,7 +12,7 @@
   - dependencies : 앱을 생성하는데 필요한 라이브러리들의 모음
   - devDependencies : 개발 환경에서만 사용하는 라이브러리들
 
-### React App 실행해보기
+### 2. React App 실행해보기
 ```bash
 npm install # node_modules 생성
 npm run dev
@@ -22,7 +22,7 @@ npm run dev
 
 <img width="1276" height="899" alt="image" src="https://github.com/user-attachments/assets/64ff20cd-0d5a-4b02-9f44-e88e9c061909" />
 
-### SPA(Single Page Application) 이란?
+### 3. SPA(Single Page Application) 이란?
 html 과 자바스크립트만으로 만들때에는 html 의 템플릿이 화면에서 보이게 된다. 하지만 리액트는 index.html 안에 `<div id="root">` 요소 안에 소스를 담는다.
 
 index.html
@@ -37,5 +37,23 @@ App.jsx
 
 <img width="676" height="457" alt="image" src="https://github.com/user-attachments/assets/4625960e-e60b-4290-9087-2db06db4616f" />
 
-### 할 일 목록 앱 소개 및 JSX 알아보기
+### 4. 할 일 목록 앱 소개 및 JSX 알아보기
+JSX란?
+- 모양은 HTML과 비슷하지만, 자바스크립트의 확장 문법이다.
+- 리액트에서 UI(화면 구조)를 작성할 때 주로 사용한다.
+- 필수는 아니지만, 자바스크립트 코드 안에서 UI를 작성하기 편리해 거의 모든 개발자가 사용한다.
+
+리액트와 JSX
+- 리액트는 JSX를 가상 DOM(Virtual DOM) 안에서 처리해 화면을 그린다.
+- JSX는 결국 자바스크립트 코드로 변환되어 브라우저에서 실행된다.
+
+바벨(Babel)의 역할
+- JSX를 브라우저가 이해할 수 있는 순수 자바스크립트 코드로 변환해 준다.
+- 예를 들어, `<h1>Hello</h1>` 같은 JSX를 React.createElement(...) 형태로 바꿔준다.
+
+즉, JSX = 자바스크립트에서 UI를 간편하게 표현하는 문법이고,
+바벨이 이걸 일반 자바스크립트로 변환,
+리액트가 이를 가상 DOM에 반영해 화면에 보여주는 구조입니다.
+
+<img width="995" height="241" alt="image" src="https://github.com/user-attachments/assets/75bda9bb-5554-4491-9421-1a4ed23caa4a" />
 
