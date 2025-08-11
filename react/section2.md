@@ -57,3 +57,55 @@ JSX란?
 
 <img width="995" height="241" alt="image" src="https://github.com/user-attachments/assets/75bda9bb-5554-4491-9421-1a4ed23caa4a" />
 
+### 5. 할 일 목록 앱 만들기 시작
+index.css
+```css
+body {
+  background-color: aliceblue;
+}
+```
+
+
+App.jsx
+```jsx
+import './App.css'
+import { Component } from 'react'
+
+// 클래스형 컴포넌트 만들기
+// Component : react 내부에서 만든 것을 상속받은 것 -> render 메소드도 바로 사용할 수 있는 이유
+export default class App extends Component {
+  render() {
+    return (
+      <div className='container'>
+        <div className='todoBlock'>
+          <div className='title'>
+            <h1>할 일 목록</h1>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+```
+
+App.css
+```css
+.container {
+  margin: auto;
+  max-width: 600px;
+}
+
+.todoBlock {
+  padding: 30px;
+  margin-top: 50px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: -9px 17px 13px rgb(0 0 0 / 16%);
+}
+```
+
+<img width="1069" height="339" alt="image" src="https://github.com/user-attachments/assets/8229b455-33d3-408a-b3c8-86f3574a6c6c" />
+
+### 6. 할 일 목록 UI 만들기(JSX, CSS 작성)
+
