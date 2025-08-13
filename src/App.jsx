@@ -5,19 +5,20 @@ import { Component } from 'react'
 // Component : react 내부에서 만든 것을 상속받은 것 -> render 메소드도 바로 사용할 수 있는 이유
 export default class App extends Component {
 
-  // 배열 안에 객체
-  todoData = [
-    {
-      id: "1",
-      title: "공부하기",
-      completed: true,
-    },
-    {
-      id: "2",
-      title: "청소하기",
-      completed: false,
-    },
-  ]
+  state = {
+    todoData: [
+      {
+        id: "1",
+        title: "공부하기",
+        completed: true,
+      },
+      {
+        id: "2",
+        title: "청소하기",
+        completed: false,
+      },
+    ]
+  }
 
   btnStyle = {
     color: '#fff',
@@ -38,8 +39,9 @@ export default class App extends Component {
 
   handleClick = (id) => {
     console.log(id)
-    let newTodoData = this.todoData.filter((data) => data.id !== id)
+    let newTodoData = this.state.todoData.filter((data) => data.id !== id)
     console.log(newTodoData)
+    this.setState({todoData: newTodoData}) // setState : 이미 만들어져있는 함수, todoData를 newTodoData로 변경할꺼야
   }
 
   render() {
@@ -50,7 +52,7 @@ export default class App extends Component {
             <h1>할 일 목록</h1>
           </div>
       {
-        this.todoData.map((data) => (
+        this.state.todoData.map((data) => (
           <div key={data.id} style={this.getStyle()}>
             <input type='checkbox' defaultChecked={data.completed}/>
             {data.title}
