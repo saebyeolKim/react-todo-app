@@ -33,11 +33,11 @@ export default class App extends Component {
     float: 'right'
   }
   // 값을 받아서 dynamic 하게 사용 가능
-  getStyle = () => {
+  getStyle = (completed) => {
     return {
       padding: '10px',
       borderBottom: '1px #ccc dotted',
-      textDecoraion: 'none',
+      textDecoration: completed ? 'line-through' : 'none',
     }
   }
 
@@ -68,6 +68,17 @@ export default class App extends Component {
     })
   }
 
+  handleComplteChange = (id) => {
+    let newTodoData = this.state.todoData.map((data) => {
+      if (data.id == id) {
+        data.completed = !data.completed;
+      }
+      return data;
+    })
+
+    this.setState({ todoData : newTodoData});
+  }
+
   render() {
     return (
       <div className='container'>
@@ -77,8 +88,9 @@ export default class App extends Component {
           </div>
           {
             this.state.todoData.map((data) => (
-              <div key={data.id} style={this.getStyle()}>
-                <input type='checkbox' defaultChecked={data.completed}/>
+              <div key={data.id} style={this.getStyle(data.completed)}>
+                <input type='checkbox'
+                onChange={() => this.handleComplteChange(data.id)} checked={data.completed}/>
                 {data.title}
                 <button style={this.btnStyle} onClick={() => this.handleClick(data.id)}>X</button>
               </div>
