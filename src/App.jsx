@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Lists from './components/Lists' // Lists.jsx 가 자녀가 됨
+import Form from './components/Form'
 
 export default function App() {
 
@@ -19,11 +20,6 @@ export default function App() {
 	])
 
 	const [value, setValue] = useState('')
-
-	// 할 일 입력하는 기능
-	const handleChange = (e) => {
-		setValue(e.target.value)
-	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault(); // 페이지 리프레싱 막아줌
@@ -50,22 +46,11 @@ export default function App() {
 				setTodoData={setTodoData}
 			/>
 
-			<form style={{display: 'flex'}} onSubmit={handleSubmit}>
-			<input 
-				type='text' 
-				name='value' 
-				style={{flex: '10', padding: '5px'}} 
-				placeholder='할 일을 입력하세요'
+			<Form
+				handleSubmit={handleSubmit}
 				value={value}
-				onChange={handleChange}
+				setValue={setValue}
 			/>
-			<input 
-				type='submit'
-				value='입력'
-				className='btn'
-				style={{flex: '1'}}
-			/>
-			</form>
 		</div>
 		</div>
 	)
