@@ -25,9 +25,9 @@ export default function App() {
 		e.preventDefault(); // 페이지 리프레싱 막아줌
 
 		let newTodo = {
-		id: Date.now(), // 유니크한 값을 id 로 지정해줌
-		title: value,
-		completed: false
+			id: Date.now(), // 유니크한 값을 id 로 지정해줌
+			title: value,
+			completed: false
 		}
 
 		setTodoData([...todoData, newTodo])
